@@ -1,10 +1,3 @@
-//
-//  CategoryExpenseTableViewCell.swift
-//  ExpenseTracker
-//
-//  Created by Sampada Shankar on 05/04/25.
-//
-
 import UIKit
 
 class CategoryExpenseTableViewCell: UITableViewCell {
