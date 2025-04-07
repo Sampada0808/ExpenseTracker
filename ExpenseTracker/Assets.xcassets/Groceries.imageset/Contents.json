@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "Groceries.svg",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}
