@@ -10,6 +10,7 @@ class HomeViewController: UIViewController {
         categoryTableView.dataSource = self
         categoryTableView.estimatedRowHeight = 72
         categoryTableView.rowHeight = UITableView.automaticDimension
+        categoryTableView.separatorStyle = .none
     }
     
     
