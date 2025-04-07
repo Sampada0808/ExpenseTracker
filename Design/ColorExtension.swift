@@ -90,4 +90,24 @@ extension UIColor {
     static var GrassGreen: UIColor {
         return UIColor(named: "GrassGreen")!
     }
+    
+    static var secondaryDarkGreen: UIColor {
+        return UIColor(named: "DarkGreen")!.withAlphaComponent(0.5)
+    }
+    
+    static var secondaryLittleDarkGreen: UIColor {
+        return UIColor(named: "LittleDarkGreen")!.withAlphaComponent(0.5)
+    }
+    
+    static var secondaryMediumGreen: UIColor {
+        return UIColor(named: "MediumGreen")!.withAlphaComponent(0.2)
+    }
+    
+    static var secondaryLightGreen : UIColor {
+        return UIColor(named: "LightGreen")!.withAlphaComponent(0.5)
+    }
+    
+    static var secondaryGrassGreen: UIColor {
+        return UIColor(named: "GrassGreen")!.withAlphaComponent(0.5)
+    }
 }

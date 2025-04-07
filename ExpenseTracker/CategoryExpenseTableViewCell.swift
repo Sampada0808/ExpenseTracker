@@ -18,7 +18,16 @@ class CategoryExpenseTableViewCell: UITableViewCell {
         backgroundIconView.clipsToBounds = true
         backgroundIconView.backgroundColor = UIColor(named: "Medicine")?.withAlphaComponent(0.5)
         backgroundIconView.contentMode = .scaleAspectFit
+        
+        categoryCellView.layer.shadowColor = UIColor.black.cgColor
+        categoryCellView.layer.shadowOpacity = 0.5 // nice soft shadow
+        categoryCellView.layer.shadowOffset = CGSize(width: 0, height: 4) // pushes shadow downward
+        categoryCellView.layer.shadowRadius = 4
+        categoryCellView.layer.masksToBounds = false
     }
+    
+    
+    
 
     override func awakeFromNib() {
         super.awakeFromNib()

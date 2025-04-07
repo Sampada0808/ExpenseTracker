@@ -5,18 +5,32 @@ class HomeViewController: UIViewController {
 
     @IBOutlet weak var categoryTableView: UITableView!
     @IBOutlet weak var titleBarView: UIView!
+
     
-//    lazy var addButton : UIButton = {
-//        let button = UIButton()
-//        return button
-//    }()
+    lazy var addButton: UIButton = {
+        let button = UIButton()
+        button.backgroundColor = UIColor.secondaryMediumGreen.withAlphaComponent(0.2)
+        button.tintColor = UIColor.MediumGreen
+        button.setImage(UIImage(systemName: "plus"), for: .normal)
+        button.imageView?.contentMode = .scaleAspectFit
+        button.imageView?.layer.transform = CATransform3DMakeScale(3, 3, 3)
+        button.addTarget(self, action: #selector(addButtonTapped), for: .touchUpInside)
+        return button
+    }()
+
+    
+    @objc func addButtonTapped(){
+        
+    }
+    
+    
     
     lazy var currentWeekLabel: UILabel = {
             let label = UILabel()
             label.text = "This Week"
             label.textColor = .gray
             label.backgroundColor = .clear
-        label.font = UIFont.systemFont(ofSize: 20, weight: .semibold)
+            label.font = UIFont.systemFont(ofSize: 20, weight: .semibold)
             label.textAlignment = .left
             label.sizeToFit()
             return label
@@ -49,16 +63,20 @@ class HomeViewController: UIViewController {
 
         override func viewDidLoad() {
             super.viewDidLoad()
+            
 
 
             view.addSubview(currentWeekLabel)
             view.addSubview(totalAmountLabel)
             view.addSubview(totalExpenseAmountLabel)
+            view.addSubview(addButton)
 
             categoryTableView.dataSource = self
             categoryTableView.estimatedRowHeight = 72
             categoryTableView.rowHeight = UITableView.automaticDimension
             categoryTableView.separatorStyle = .none
+            
+            
         }
 
         override func viewWillLayoutSubviews() {
@@ -81,6 +99,12 @@ class HomeViewController: UIViewController {
             
             
             addAllLabels()
+            
+            let buttonSize: CGFloat = 60
+            let xPos = (view.frame.width - buttonSize) / 2
+            let yPos = view.frame.height - buttonSize - 40
+            addButton.frame = CGRect(x: xPos, y: yPos, width: buttonSize, height: buttonSize)
+            addButton.layer.cornerRadius = buttonSize / 2
             
 
             
@@ -145,4 +169,5 @@ extension HomeViewController: UITableViewDataSource{
         return 10
     }
 }
+
 
