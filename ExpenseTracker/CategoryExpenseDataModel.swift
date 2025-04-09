@@ -11,7 +11,7 @@ import UIKit
 
 struct CategoryExpenseDataModel {
     let icon: UIImage
-    let categoryName: String
+    let categoryName: Category
     var amount: Double
 }
 

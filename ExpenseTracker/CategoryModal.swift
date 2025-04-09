@@ -1,33 +1,39 @@
 import Foundation
 import UIKit
 
-enum Category : String, CaseIterable{
-    case medicine = "Medicine", doctor = "Doctor", groceries = "Groceries", fruit = "Fruits", vegetables = "Vegetables", misc = "Miscellaneous", online = "Online", snacks = "Snacks"
+enum Category: String, CaseIterable {
+    case medicine = "Medicine"
+    case doctor = "Doctor"
+    case groceries = "Groceries"
+    case fruits = "Fruits"
+    case vegetables = "Vegetables"
+    case miscellaneous = "Miscellaneous"
+    case online = "Online"
+    case snacks = "Snacks"
     
-    var color : UIColor {
-        switch self{
-        case .doctor : return UIColor.doctor
-        case .medicine:  return UIColor.medicine
-        case .groceries:  return UIColor.groceries
-        case .fruit:  return UIColor.fruits
-        case .vegetables:  return UIColor.vegetable
-        case .misc:  return UIColor.miscellaneous
-        case .online:  return UIColor.online
-        case .snacks:  return UIColor.snacks
+    var color: UIColor {
+        switch self {
+        case .doctor: return UIColor.doctors
+        case .medicine: return UIColor.medicines
+        case .groceries: return UIColor.grocerie
+        case .fruits: return UIColor.fruit
+        case .vegetables: return UIColor.vegetables
+        case .miscellaneous: return UIColor.misc
+        case .online: return UIColor.onlines
+        case .snacks: return UIColor.snack
         }
     }
-    
-    var secondaryColor : UIColor {
-        switch self{
-        case .doctor : return UIColor.backgroundDoctors
-        case .medicine:  return UIColor.backgroundMedicines
-        case .groceries:  return UIColor.backgroundGroceries
-        case .fruit:  return UIColor.backgroundFruit
-        case .vegetables:  return UIColor.backgroundVegetables
-        case .misc:  return UIColor.backgroundMisc
-        case .online:  return UIColor.backgroundOnlines
-        case .snacks:  return UIColor.backgroundSnack
+
+    var secondaryColor: UIColor {
+        switch self {
+        case .doctor: return UIColor.backgroundDoctors
+        case .medicine: return UIColor.backgroundMedicines
+        case .groceries: return UIColor.backgroundGroceries
+        case .fruits: return UIColor.backgroundFruit
+        case .vegetables: return UIColor.backgroundVegetables
+        case .miscellaneous: return UIColor.backgroundMisc
+        case .online: return UIColor.backgroundOnlines
+        case .snacks: return UIColor.backgroundSnack
         }
     }
-    
 }

@@ -5,7 +5,28 @@ class HomeViewController: UIViewController {
 
     @IBOutlet weak var categoryTableView: UITableView!
     @IBOutlet weak var titleBarView: UIView!
+    
+    var categoricalExpenses: [CategoryExpenseDataModel] = [
+       CategoryExpenseDataModel(icon: UIImage(named: "Fruits")!, categoryName: .fruits , amount: 500.00),CategoryExpenseDataModel(icon: UIImage(named: "Groceries")!, categoryName: .groceries, amount: 100.55)
+        ]
 
+    lazy var noExpenseLabel : UILabel = {
+        let label = UILabel()
+        label.text = "No Expense added yet"
+        label.font = UIFont.style(.messageLabel)
+        label.textColor = UIColor.grassGreen
+        return label
+    }()
+    
+    lazy var messageLabel : UILabel = {
+        let label = UILabel()
+        label.numberOfLines = 2
+        label.lineBreakMode = .byWordWrapping
+        label.text = "Tap + to add a new expense"
+        label.font = UIFont.style(.instructionLabel)
+        label.textColor = UIColor.mediumGreen
+        return label
+    }()
     
     lazy var addButton: UIButton = {
         let button = UIButton()
@@ -56,8 +77,7 @@ class HomeViewController: UIViewController {
     }()
     
     var totalExpenseAmount: Double {
-        // compute total amount here from your data source
-        return 100.00 // for now, hardcoded
+        return categoricalExpenses.reduce(0) { $0 + $1.amount }
     }
 
 
@@ -70,6 +90,8 @@ class HomeViewController: UIViewController {
             view.addSubview(totalAmountLabel)
             view.addSubview(totalExpenseAmountLabel)
             view.addSubview(addButton)
+            view.addSubview(noExpenseLabel)
+            view.addSubview(messageLabel)
 
             categoryTableView.dataSource = self
             categoryTableView.estimatedRowHeight = 72
@@ -106,6 +128,17 @@ class HomeViewController: UIViewController {
             addButton.frame = CGRect(x: xPos, y: yPos, width: buttonSize, height: buttonSize)
             addButton.layer.cornerRadius = buttonSize / 2
             
+            titleBarView.layer.shadowColor = UIColor.black.cgColor
+            titleBarView.layer.shadowOpacity = 0.2
+            titleBarView .layer.shadowRadius = 5
+            titleBarView.layer.shadowOffset = CGSize(width: 0, height: 5)
+            titleBarView.layer.masksToBounds = false
+            
+            addButton.layer.shadowColor = UIColor.black.cgColor
+            addButton.layer.shadowRadius = 5
+            addButton.layer.shadowOpacity = 0.4
+            addButton.layer.shadowOffset = CGSize(width: 4, height: 4)
+            addButton.layer.masksToBounds = false
 
             
     }
@@ -118,38 +151,74 @@ class HomeViewController: UIViewController {
 
     
     func addAllLabels() {
-        currentWeekLabel.sizeToFit()
-        let xPosCurrentWeekLabel: CGFloat = 14
-        let yPosCurrentWeekLabel: CGFloat = titleBarView.frame.maxY + 10
-        currentWeekLabel.frame = CGRect(x: xPosCurrentWeekLabel,
-                                        y: yPosCurrentWeekLabel,
-                                        width: currentWeekLabel.frame.width,
-                                        height: currentWeekLabel.frame.height)
+        let total = totalExpenseAmount
         
-        // Ensure labels have correct sizes
-        totalAmountLabel.sizeToFit()
-        totalExpenseAmountLabel.sizeToFit()
-        
-        // Calculate combined width
-        let spacing: CGFloat = 5
-        let totalLabelWidth = totalAmountLabel.frame.width
-        let amountLabelWidth = totalExpenseAmountLabel.frame.width
-        let totalCombinedWidth = totalLabelWidth + spacing + amountLabelWidth
-        
-        // Align to right
-        let xPosTotalStart = view.frame.width - totalCombinedWidth - 14 // 14 for right padding
-        let yPos = titleBarView.frame.maxY + 10
-        let yPosTotalLabel = titleBarView.frame.maxY + 14
+        if categoricalExpenses.isEmpty ||  total == 0{
+            noExpenseLabel.isHidden = false
+            messageLabel.isHidden = false
+            totalExpenseAmountLabel.isHidden = true
+            totalAmountLabel.isHidden = true
+            currentWeekLabel.isHidden = true
 
-        totalAmountLabel.frame = CGRect(x: xPosTotalStart,
-                                        y: yPosTotalLabel,
-                                        width: totalLabelWidth,
-                                        height: totalAmountLabel.frame.height)
 
-        totalExpenseAmountLabel.frame = CGRect(x: totalAmountLabel.frame.maxX + spacing,
-                                               y: yPos,
-                                               width: amountLabelWidth,
-                                               height: totalExpenseAmountLabel.frame.height)
+            noExpenseLabel.sizeToFit()
+            let xPosExpenseLabel = (view.frame.width - noExpenseLabel.frame.width) / 2
+            let yPosExpenseLabel = (view.frame.height - noExpenseLabel.frame.height) / 2 - 50
+            noExpenseLabel.frame = CGRect(x: xPosExpenseLabel,
+                                           y: yPosExpenseLabel,
+                                           width: noExpenseLabel.frame.width,
+                                           height: noExpenseLabel.frame.height)
+
+            messageLabel.sizeToFit()
+            let xPosMessageLabel = (view.frame.width - messageLabel.frame.width) / 2
+            let yPosMessageLabel = noExpenseLabel.frame.maxY + 40
+            messageLabel.frame = CGRect(x: xPosMessageLabel,
+                                         y: yPosMessageLabel,
+                                         width: messageLabel.frame.width / 2 + 100 ,
+                                         height: messageLabel.frame.height)
+        } else {
+            // Hide all when expenses exist
+            noExpenseLabel.isHidden = true
+            messageLabel.isHidden = true
+            totalExpenseAmountLabel.isHidden = false
+            totalAmountLabel.isHidden = false
+            currentWeekLabel.isHidden = false
+            
+            currentWeekLabel.sizeToFit()
+            let xPosCurrentWeekLabel: CGFloat = 14
+            let yPosCurrentWeekLabel: CGFloat = titleBarView.frame.maxY + 14
+            currentWeekLabel.frame = CGRect(x: xPosCurrentWeekLabel,
+                                            y: yPosCurrentWeekLabel,
+                                            width: currentWeekLabel.frame.width,
+                                            height: currentWeekLabel.frame.height)
+            
+            totalAmountLabel.sizeToFit()
+            totalExpenseAmountLabel.sizeToFit()
+
+            let spacing: CGFloat = 5
+            let totalLabelWidth = totalAmountLabel.frame.width
+            let amountLabelWidth = totalExpenseAmountLabel.frame.width
+            let totalCombinedWidth = totalLabelWidth + spacing + amountLabelWidth
+
+            let xPosTotalStart = view.frame.width - totalCombinedWidth - 14
+            let yPos = titleBarView.frame.maxY + 14
+            let yPosTotalLabel = titleBarView.frame.maxY + 18
+
+            totalAmountLabel.frame = CGRect(x: xPosTotalStart,
+                                            y: yPosTotalLabel,
+                                            width: totalLabelWidth,
+                                            height: totalAmountLabel.frame.height)
+
+            totalExpenseAmountLabel.frame = CGRect(x: totalAmountLabel.frame.maxX + spacing,
+                                                   y: yPos,
+                                                   width: amountLabelWidth,
+                                                   height: totalExpenseAmountLabel.frame.height)
+        }
+
+
+        
+
+        
     }
 
     
@@ -160,13 +229,20 @@ class HomeViewController: UIViewController {
 
 extension HomeViewController: UITableViewDataSource{
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: CategoryExpenseTableViewCell.identifier, for: indexPath)
+        let detail = categoricalExpenses[indexPath.row]
+        
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: CategoryExpenseTableViewCell.identifier, for: indexPath) as? CategoryExpenseTableViewCell else {
+            return UITableViewCell()
+        }
+        
+        cell.configure(with: detail) // <-- configure the cell
         return cell
     }
+
     
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 10
+        return categoricalExpenses.count
     }
 }
 

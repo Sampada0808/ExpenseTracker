@@ -27,7 +27,7 @@
                                         <nil key="highlightedColor"/>
                                     </label>
                                 </subviews>
-                                <color key="backgroundColor" systemColor="separatorColor"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
                                     <constraint firstAttribute="bottom" secondItem="Rod-RF-5UW" secondAttribute="bottom" constant="20" id="4Kr-9U-8fb"/>
                                     <constraint firstItem="Rod-RF-5UW" firstAttribute="leading" secondItem="JYj-wM-Fn8" secondAttribute="leading" constant="20" id="h8t-Ce-jDa"/>
@@ -131,7 +131,7 @@
                     </view>
                     <connections>
                         <outlet property="categoryTableView" destination="9wB-fR-QyO" id="vqa-bn-C6X"/>
-                        <outlet property="titleBarView" destination="JYj-wM-Fn8" id="B3S-mn-dqW"/>
+                        <outlet property="titleBarView" destination="JYj-wM-Fn8" id="S52-nA-Wis"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
@@ -147,9 +147,6 @@
         <namedColor name="MediumGreen">
             <color red="0.34509804844856262" green="0.5058823823928833" blue="0.34117650985717773" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
-        <systemColor name="separatorColor">
-            <color red="0.23529411759999999" green="0.23529411759999999" blue="0.26274509800000001" alpha="0.28999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
-        </systemColor>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

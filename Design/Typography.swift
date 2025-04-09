@@ -17,6 +17,7 @@ enum FontType : String {
     case rubikLight = "Rubik-Light"
     case rubikMedium = "Rubik-Medium"
     case rubikSemiBold = "Rubik-SemiBold"
+    case rubikItalic = "Rubik-Italic"
 }
 
 
@@ -49,17 +50,20 @@ enum FontStyle {
     case body
     case secondaryText
     case caption
+    case instructionLabel
+    case messageLabel
 }
 
 extension FontStyle {
     var size : Double {
         switch self{
         case .h1 : return 32
-        case .h2: return 26
-        case .h3: return 22
+        case .h2, .instructionLabel: return 26
+        case .h3, .messageLabel: return 22
         case .body: return 20
         case .secondaryText: return 18
         case .caption: return 14
+
         }
     }
     private var fontDescription : FontDescription {
@@ -70,6 +74,8 @@ extension FontStyle {
         case .body: FontDescription(font: .rubikSemiBold, size: .theme(.body), style: .body)
         case .secondaryText: FontDescription(font: .rubikMedium, size: .theme(.secondaryText), style: .caption1)
         case .caption: FontDescription(font: .rubikBold, size: .theme(.caption), style: .footnote)
+        case .instructionLabel:FontDescription(font: .rubikItalic, size: .theme(.instructionLabel), style: .footnote)
+        case .messageLabel:FontDescription(font: .rubikItalic, size: .theme(.messageLabel), style: .footnote)
         }
     }
     

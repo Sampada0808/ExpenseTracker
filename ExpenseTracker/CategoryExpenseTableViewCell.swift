@@ -16,16 +16,30 @@ class CategoryExpenseTableViewCell: UITableViewCell {
         
         backgroundIconView.layer.cornerRadius = backgroundIconView.frame.height / 2
         backgroundIconView.clipsToBounds = true
-        backgroundIconView.backgroundColor = UIColor(named: "Medicine")?.withAlphaComponent(0.5)
         backgroundIconView.contentMode = .scaleAspectFit
         
         categoryCellView.layer.shadowColor = UIColor.black.cgColor
         categoryCellView.layer.shadowOpacity = 0.5 // nice soft shadow
-        categoryCellView.layer.shadowOffset = CGSize(width: 0, height: 4) // pushes shadow downward
+        categoryCellView.layer.shadowOffset = CGSize(width: 0, height: 4) 
         categoryCellView.layer.shadowRadius = 4
         categoryCellView.layer.masksToBounds = false
     }
     
+    func configure(with data: CategoryExpenseDataModel) {
+        categoryIcon.image = data.icon.withRenderingMode(.alwaysTemplate)
+        categoryIcon.tintColor = data.categoryName.color
+        backgroundIconView.backgroundColor = data.categoryName.secondaryColor
+        
+        categoryName.text = data.categoryName.rawValue
+        categoryName.textColor = data.categoryName.color
+        categoryName.font = UIFont.style(.secondaryText)
+        
+        amountLabel.text = "$\(String(format: "%.2f", data.amount))"
+        amountLabel.textColor = data.categoryName.color
+        amountLabel.font = UIFont.style(.secondaryText)
+    }
+
+
     
     
 
