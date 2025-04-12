@@ -41,6 +41,8 @@ class HomeViewController: UIViewController {
 
     
     @objc func addButtonTapped(){
+        let newExpenseModalController = NewExpenseModalViewController()
+        present(newExpenseModalController, animated: true)
         
     }
     
