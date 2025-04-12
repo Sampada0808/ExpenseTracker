@@ -9,9 +9,27 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
-        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="NewExpenseModalView" customModule="ExpenseTracker" customModuleProvider="target">
+            <connections>
+                <outlet property="AddExpenseLabel" destination="QtR-Zd-6za" id="7a9-AE-fI5"/>
+                <outlet property="categoryLabel" destination="zOV-MH-fu8" id="9AT-DT-I1M"/>
+                <outlet property="categoryPickerView" destination="YrD-kI-88h" id="JRH-hv-l8b"/>
+                <outlet property="contentView" destination="iN0-l3-epB" id="7Kk-Yb-QpI"/>
+                <outlet property="costLabel" destination="ZJH-ih-oCW" id="pOb-p6-yiU"/>
+                <outlet property="costTextField" destination="t86-1w-RVb" id="cXE-jQ-g3u"/>
+                <outlet property="dateLabel" destination="d9x-Ej-dbe" id="KUN-QZ-wrL"/>
+                <outlet property="dateTextField" destination="qCM-cz-eOB" id="zKE-W6-Ae8"/>
+                <outlet property="itemLabel" destination="yjW-cH-aEd" id="Rlh-YC-btY"/>
+                <outlet property="itemTextField" destination="uAT-Zs-Utp" id="2uy-1v-G8l"/>
+                <outlet property="qtyLabel" destination="yQd-b3-i8U" id="O8N-dU-A9z"/>
+                <outlet property="qtyTextFiels" destination="bnV-xL-sXq" id="cXg-AH-eRe"/>
+                <outlet property="submitButton" destination="Qs7-x8-Ndu" id="LBD-uS-U2I"/>
+                <outlet property="unitLabel" destination="dW0-cW-dia" id="T6T-v4-ZJJ"/>
+                <outlet property="unitTextFields" destination="bLe-cE-Ph2" id="zvw-EJ-JDY"/>
+            </connections>
+        </placeholder>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
-        <view contentMode="scaleToFill" id="iN0-l3-epB" customClass="NewExpenseModalView" customModule="ExpenseTracker" customModuleProvider="target">
+        <view contentMode="scaleToFill" id="iN0-l3-epB">
             <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
@@ -97,7 +115,7 @@
                     <state key="normal" title="Button"/>
                     <buttonConfiguration key="configuration" style="plain" title="Submit"/>
                     <connections>
-                        <action selector="submitBtnTapped:" destination="iN0-l3-epB" eventType="touchUpInside" id="84h-P4-ykQ"/>
+                        <action selector="submitBtnTapped:" destination="-1" eventType="touchUpInside" id="5YY-hJ-IEc"/>
                     </connections>
                 </button>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xaE-8e-N0y">
@@ -105,7 +123,7 @@
                     <state key="normal" title="Button"/>
                     <buttonConfiguration key="configuration" style="plain" image="CrossMark"/>
                     <connections>
-                        <action selector="closeBtnTapped:" destination="iN0-l3-epB" eventType="touchUpInside" id="X1r-TV-2hA"/>
+                        <action selector="closeBtnTapped:" destination="-1" eventType="touchUpInside" id="RQ4-Pg-ZyR"/>
                     </connections>
                 </button>
             </subviews>
@@ -154,22 +172,6 @@
                 <constraint firstItem="YrD-kI-88h" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="zNY-Pa-7mq"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-            <connections>
-                <outlet property="AddExpenseLabel" destination="QtR-Zd-6za" id="EJJ-Uu-4He"/>
-                <outlet property="categoryLabel" destination="zOV-MH-fu8" id="WnD-oC-s3Q"/>
-                <outlet property="categoryPickerView" destination="YrD-kI-88h" id="lm0-jz-WYB"/>
-                <outlet property="costLabel" destination="ZJH-ih-oCW" id="4ub-M7-VkP"/>
-                <outlet property="costTextField" destination="t86-1w-RVb" id="TCX-3J-L5z"/>
-                <outlet property="dateLabel" destination="d9x-Ej-dbe" id="GcV-Gy-lhj"/>
-                <outlet property="dateTextField" destination="qCM-cz-eOB" id="FCO-85-WIn"/>
-                <outlet property="itemLabel" destination="yjW-cH-aEd" id="hE7-aA-2YL"/>
-                <outlet property="itemTextField" destination="uAT-Zs-Utp" id="oqb-dy-Jwr"/>
-                <outlet property="qtyLabel" destination="yQd-b3-i8U" id="DDj-o5-foj"/>
-                <outlet property="qtyTextFiels" destination="bnV-xL-sXq" id="j3K-Hx-nha"/>
-                <outlet property="submitButton" destination="Qs7-x8-Ndu" id="gwF-YQ-DXz"/>
-                <outlet property="unitLabel" destination="dW0-cW-dia" id="S5K-fc-GmN"/>
-                <outlet property="unitTextFields" destination="bLe-cE-Ph2" id="aex-JE-u71"/>
-            </connections>
             <point key="canvasLocation" x="64.885496183206101" y="20.774647887323944"/>
         </view>
     </objects>

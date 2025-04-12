@@ -2,10 +2,13 @@ import UIKit
 
 class NewExpenseModalViewController: UIViewController {
     
+    
     lazy var modalView : NewExpenseModalView = {
-        let modalView = UINib(nibName: "NewExpenseModal", bundle: nil).instantiate(withOwner:nil).first as! NewExpenseModalView
+        let modalWidth = view.frame.width - CGFloat(30)
+        let modalHeight = CGFloat(667)
+        let frame = CGRect(x: 15, y: view.center.y - (modalHeight / 2), width: modalWidth, height: modalHeight)
+        let modalView = NewExpenseModalView(frame: frame)
         return modalView
-        
     }()
     
     init(){
@@ -18,9 +21,7 @@ class NewExpenseModalViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = UIColor.black.withAlphaComponent(0.9)
         view.addSubview(modalView)
-        let modalWidth = view.frame.width - CGFloat(30)
-        let modalHeight = CGFloat(667)
-        modalView.frame = CGRect(x: 15, y: view.center.y - (modalHeight / 2), width: modalWidth, height: modalHeight)
+       
     }
     required init?(coder: NSCoder) {
         fatalError("Init coder not yet implemented")
