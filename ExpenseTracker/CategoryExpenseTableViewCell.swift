@@ -25,19 +25,42 @@ class CategoryExpenseTableViewCell: UITableViewCell {
         categoryCellView.layer.masksToBounds = false
     }
     
-    func configure(with data: CategoryExpenseDataModel) {
-        categoryIcon.image = data.icon.withRenderingMode(.alwaysTemplate)
-        categoryIcon.tintColor = data.categoryName.color
-        backgroundIconView.backgroundColor = data.categoryName.secondaryColor
+    func configure(with model: CategoryExpenseDataModel) {
+        // Set the icon image
+        categoryIcon.image = model.icon.withRenderingMode(.alwaysTemplate)
         
-        categoryName.text = data.categoryName.rawValue
-        categoryName.textColor = data.categoryName.color
+        // Set the tint color based on the category's primary color
+        categoryIcon.tintColor = model.categoryName.color
+        
+        // Set the background color of the icon view based on the category's secondary color
+        backgroundIconView.backgroundColor = model.categoryName.secondaryColor
+        
+        // Set the category name and apply its color
+        categoryName.text = model.categoryName.rawValue
+        categoryName.textColor = model.categoryName.color
         categoryName.font = UIFont.style(.secondaryText)
         
-        amountLabel.text = "$\(String(format: "%.2f", data.amount))"
-        amountLabel.textColor = data.categoryName.color
+        // Format and set the amount
+        amountLabel.text = "$\(String(format: "%.2f", model.amount))"
+        amountLabel.textColor = model.categoryName.color
         amountLabel.font = UIFont.style(.secondaryText)
     }
+
+
+    
+//    func configure(with data: CategoryExpenseDataModel) {
+//        categoryIcon.image = data.icon.withRenderingMode(.alwaysTemplate)
+//        categoryIcon.tintColor = data.categoryName.color
+//        backgroundIconView.backgroundColor = data.categoryName.secondaryColor
+//        
+//        categoryName.text = data.categoryName.rawValue
+//        categoryName.textColor = data.categoryName.color
+//        categoryName.font = UIFont.style(.secondaryText)
+//        
+//        amountLabel.text = "$\(String(format: "%.2f", data.amount))"
+//        amountLabel.textColor = data.categoryName.color
+//        amountLabel.font = UIFont.style(.secondaryText)
+//    }
 
 
     

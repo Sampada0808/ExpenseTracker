@@ -22,10 +22,10 @@
                 <outlet property="itemLabel" destination="yjW-cH-aEd" id="Rlh-YC-btY"/>
                 <outlet property="itemTextField" destination="uAT-Zs-Utp" id="2uy-1v-G8l"/>
                 <outlet property="qtyLabel" destination="yQd-b3-i8U" id="O8N-dU-A9z"/>
-                <outlet property="qtyTextFiels" destination="bnV-xL-sXq" id="cXg-AH-eRe"/>
+                <outlet property="qtyTextField" destination="bnV-xL-sXq" id="7fm-z8-G7H"/>
                 <outlet property="submitButton" destination="Qs7-x8-Ndu" id="LBD-uS-U2I"/>
                 <outlet property="unitLabel" destination="dW0-cW-dia" id="T6T-v4-ZJJ"/>
-                <outlet property="unitTextFields" destination="bLe-cE-Ph2" id="zvw-EJ-JDY"/>
+                <outlet property="unitTextField" destination="bLe-cE-Ph2" id="NSQ-YF-eiF"/>
             </connections>
         </placeholder>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>

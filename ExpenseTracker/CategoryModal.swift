@@ -36,4 +36,17 @@ enum Category: String, CaseIterable {
         case .snacks: return UIColor.backgroundSnack
         }
     }
+    
+    var image : UIImage {
+        switch self{
+        case .medicine: return UIImage.medicine
+        case .doctor: return UIImage.doctor
+        case .groceries: return UIImage.groceries
+        case .fruits: return UIImage.fruits
+        case .vegetables: return UIImage.vegetable
+        case .miscellaneous: return UIImage.miscellaneous
+        case .online: return UIImage.online
+        case .snacks: return UIImage.snacks
+        }
+    }
 }

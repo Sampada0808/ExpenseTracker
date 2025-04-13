@@ -1,6 +1,14 @@
 import UIKit
 
-class NewExpenseModalViewController: UIViewController {
+class NewExpenseModalViewController: UIViewController, NewExpenseModalDelegate {
+    func closeModal() {
+        UIView.animate(withDuration: 0.3, animations: {
+            self.view.alpha = 0
+        }) { _ in
+            self.dismiss(animated: false, completion: nil)
+        }
+    }
+    
     
     
     lazy var modalView : NewExpenseModalView = {
@@ -20,6 +28,7 @@ class NewExpenseModalViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = UIColor.black.withAlphaComponent(0.9)
+        modalView.delegate =  self
         view.addSubview(modalView)
        
     }

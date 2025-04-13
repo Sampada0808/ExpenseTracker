@@ -1,6 +1,16 @@
 import UIKit
 
+
+protocol NewExpenseModalDelegate : AnyObject {
+    func closeModal()
+}
+
 class NewExpenseModalView: UIView {
+    
+    var dailyExpenseEntry : [DailyExpense] = []
+    weak var delegate : NewExpenseModalDelegate?
+    
+    
     //Labels outlets
     @IBOutlet weak private var AddExpenseLabel: UILabel!
     @IBOutlet weak private var itemLabel: UILabel!
@@ -14,10 +24,10 @@ class NewExpenseModalView: UIView {
     
     //TextFields outlets
     @IBOutlet weak private var itemTextField: UITextField!
-    @IBOutlet weak private var qtyTextFiels: UITextField!
+    @IBOutlet weak private var qtyTextField: UITextField!
     @IBOutlet weak private var costTextField: UITextField!
     @IBOutlet weak private var dateTextField: UITextField!
-    @IBOutlet weak private var unitTextFields: UITextField!
+    @IBOutlet weak private var unitTextField: UITextField!
     
     
     //Category Picker view outlet
@@ -39,8 +49,8 @@ class NewExpenseModalView: UIView {
     }
 
     var quantity: String {
-        get { return qtyTextFiels.text ?? "" }
-        set { qtyTextFiels.text = newValue }
+        get { return qtyTextField.text ?? "" }
+        set { qtyTextField.text = newValue }
     }
 
     var cost: String {
@@ -54,8 +64,8 @@ class NewExpenseModalView: UIView {
     }
 
     var unit: String {
-        get { return unitTextFields.text ?? "" }
-        set { unitTextFields.text = newValue }
+        get { return unitTextField.text ?? "" }
+        set { unitTextField.text = newValue }
     }
 
     
@@ -86,12 +96,12 @@ class NewExpenseModalView: UIView {
         unitPicker.delegate = self
         unitPicker.dataSource = self
 
-        qtyTextFiels.inputView = qtyPicker
-        unitTextFields.inputView = unitPicker
+        qtyTextField.inputView = qtyPicker
+        unitTextField.inputView = unitPicker
         
 
-        qtyTextFiels.inputAccessoryView = createToolbar()
-        unitTextFields.inputAccessoryView = createToolbar()
+        qtyTextField.inputAccessoryView = createToolbar()
+        unitTextField.inputAccessoryView = createToolbar()
         dateTextField.inputAccessoryView = createToolbar()
 
         setupDatePicker()
@@ -134,7 +144,7 @@ class NewExpenseModalView: UIView {
 
     private func settingUpUiLayout(){
         //changing the corner radius of the textfields
-        [itemTextField, qtyTextFiels, costTextField, dateTextField, unitTextFields].forEach {
+        [itemTextField, qtyTextField, costTextField, dateTextField, unitTextField].forEach {
             $0?.layer.cornerRadius = CGFloat(10)
                 $0?.clipsToBounds = true
             }
@@ -160,9 +170,24 @@ class NewExpenseModalView: UIView {
     
     
     @IBAction func submitBtnTapped(_ sender: Any) {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "dd/MM/yyyy"
+        guard let item = itemTextField.text, let qty = qtyTextField.text, let unit = unitTextField.text, let price =  costTextField.text, let dateStr = dateTextField.text, let date = dateFormatter.date(from: dateStr), !item.isEmpty, !qty.isEmpty, !unit.isEmpty, !price.isEmpty, !dateStr.isEmpty else{
+            return
+        }
+        let expense =  ExpenseItem(item: item, qty: qty, unit: unit, price: Double(price)!)
+        let selectedRow = categoryPickerView.selectedRow(inComponent: 0)
+        let category = Category.allCases[selectedRow]
+        let dailyExpense = DailyExpense(date: date, category:category , item: [expense])
+        dailyExpenseEntry.append(dailyExpense)
+        let userInfo: [String: DailyExpense] = ["newExpense": dailyExpense]
+        NotificationCenter.default.post(name: NSNotification.Name("com.Spendly.addExpense"), object: nil, userInfo: userInfo)
+        delegate?.closeModal()
+        
     }
     
     @IBAction func closeBtnTapped(_ sender: Any) {
+        delegate?.closeModal()
         
     }
 }
@@ -210,14 +235,15 @@ extension NewExpenseModalView :UIPickerViewDelegate{
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         switch pickerView {
         case qtyPicker:
-            qtyTextFiels.text = qtyOptions[row]
+            qtyTextField.text = qtyOptions[row]
         case unitPicker:
-            unitTextFields.text = unitOptions[row]
+            unitTextField.text = unitOptions[row]
         default:
             break
         }
     }
 
 }
+
 
 
