@@ -10,6 +10,8 @@
 		27373A142D9EF6F900B5B705 /* AppThemeColors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 27373A132D9EF6F900B5B705 /* AppThemeColors.xcassets */; };
 		27373A162D9EF71600B5B705 /* CategoryColors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 27373A152D9EF71600B5B705 /* CategoryColors.xcassets */; };
 		27373A1B2D9EFA2E00B5B705 /* ColorExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27373A1A2D9EFA2E00B5B705 /* ColorExtension.swift */; };
+		2758951C2DB13864000AE893 /* NavBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2758951A2DB13864000AE893 /* NavBarViewController.swift */; };
+		2758951D2DB13864000AE893 /* NavBarViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2758951B2DB13864000AE893 /* NavBarViewController.xib */; };
 		27EF0F9D2DA41A2000627944 /* Typography.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27EF0F9C2DA41A2000627944 /* Typography.swift */; };
 /* End PBXBuildFile section */
 
@@ -18,6 +20,8 @@
 		27373A132D9EF6F900B5B705 /* AppThemeColors.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = AppThemeColors.xcassets; sourceTree = "<group>"; };
 		27373A152D9EF71600B5B705 /* CategoryColors.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = CategoryColors.xcassets; sourceTree = "<group>"; };
 		27373A1A2D9EFA2E00B5B705 /* ColorExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorExtension.swift; sourceTree = "<group>"; };
+		2758951A2DB13864000AE893 /* NavBarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavBarViewController.swift; sourceTree = "<group>"; };
+		2758951B2DB13864000AE893 /* NavBarViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NavBarViewController.xib; sourceTree = "<group>"; };
 		27EF0F9C2DA41A2000627944 /* Typography.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Typography.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -81,6 +85,8 @@
 			children = (
 				27373A132D9EF6F900B5B705 /* AppThemeColors.xcassets */,
 				27373A152D9EF71600B5B705 /* CategoryColors.xcassets */,
+				2758951A2DB13864000AE893 /* NavBarViewController.swift */,
+				2758951B2DB13864000AE893 /* NavBarViewController.xib */,
 				27373A1A2D9EFA2E00B5B705 /* ColorExtension.swift */,
 				27EF0F9C2DA41A2000627944 /* Typography.swift */,
 			);
@@ -154,6 +160,7 @@
 			files = (
 				27373A142D9EF6F900B5B705 /* AppThemeColors.xcassets in Resources */,
 				27373A162D9EF71600B5B705 /* CategoryColors.xcassets in Resources */,
+				2758951D2DB13864000AE893 /* NavBarViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -166,6 +173,7 @@
 			files = (
 				27EF0F9D2DA41A2000627944 /* Typography.swift in Sources */,
 				27373A1B2D9EFA2E00B5B705 /* ColorExtension.swift in Sources */,
+				2758951C2DB13864000AE893 /* NavBarViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
