@@ -4,7 +4,7 @@ class HomeViewController: UIViewController {
 
     // MARK: - IBOutlets
     @IBOutlet weak var categoryTableView: UITableView!
-    @IBOutlet weak var titleBarView: UIView!
+    var titleBarView: UIView!
     
     // MARK: - Data Sources
     var categoricalExpenses: [CategoryExpenseDataModel] = []
@@ -76,6 +76,10 @@ class HomeViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        let nib  =  NavBarViewController(nibName: "NavBarViewController", bundle: nil)
+        addChild(nib)
+        self.titleBarView = nib.view
+        
         // Observer for new expense added
         NotificationCenter.default.addObserver(self, selector: #selector(handleExpense), name: NSNotification.Name("com.Spendly.addExpense"), object: nil)
 
@@ -86,6 +90,8 @@ class HomeViewController: UIViewController {
         view.addSubview(addButton)
         view.addSubview(noExpenseLabel)
         view.addSubview(messageLabel)
+        view.addSubview(titleBarView)
+
 
         // Setup TableView
         categoryTableView.dataSource = self
@@ -120,6 +126,31 @@ class HomeViewController: UIViewController {
 
         updateTotalExpenseLabel()
         addAllLabels()
+        // Assuming your navBarContainer is already added to the view hierarchy
+
+        // Disable autoresizing mask translation for auto layout
+        titleBarView.translatesAutoresizingMaskIntoConstraints = false
+
+        // Activate constraints for navBarContainer
+        NSLayoutConstraint.activate([
+            titleBarView.topAnchor.constraint(equalTo: view.topAnchor, constant: 0), // Space from top of safe area
+            titleBarView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 0), // Left edge to screen edge
+            titleBarView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: 0), // Right edge to screen edge
+        ])
+
+        // Assuming your categoryTableView is already added to the view hierarchy
+
+        // Disable autoresizing mask translation for auto layout
+        categoryTableView.translatesAutoresizingMaskIntoConstraints = false
+
+        // Activate constraints for categoryTableView
+        NSLayoutConstraint.activate([
+            categoryTableView.topAnchor.constraint(equalTo: titleBarView.bottomAnchor, constant: 25), // 25 points space from the navbar
+            categoryTableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 0), // Left edge to screen edge
+            categoryTableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: 0), // Right edge to screen edge
+            categoryTableView.bottomAnchor.constraint(equalTo: view.bottomAnchor) // Optional: Set bottom anchor if you want it to extend fully down
+        ])
+
     }
     
     deinit {
