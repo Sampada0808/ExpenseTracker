@@ -115,6 +115,35 @@
             </objects>
             <point key="canvasLocation" x="131.25" y="2.112676056338028"/>
         </scene>
+        <!--Categorical Expense View Controller-->
+        <scene sceneID="6Xg-FR-3s4">
+            <objects>
+                <viewController id="wsq-4P-Euz" customClass="CategoricalExpenseViewController" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="iuQ-Fn-YQi">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" ambiguous="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="h0E-cl-f6a">
+                                <rect key="frame" x="0.0" y="71" width="320" height="497"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                            </tableView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="7rt-Et-hep"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="7rt-Et-hep" firstAttribute="trailing" secondItem="h0E-cl-f6a" secondAttribute="trailing" id="d5P-cK-qov"/>
+                            <constraint firstItem="7rt-Et-hep" firstAttribute="bottom" secondItem="h0E-cl-f6a" secondAttribute="bottom" id="f1K-BT-3yl"/>
+                            <constraint firstItem="h0E-cl-f6a" firstAttribute="leading" secondItem="7rt-Et-hep" secondAttribute="leading" id="xWc-nm-vPu"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="categoricalExpenseTableView" destination="h0E-cl-f6a" id="Yya-5v-fy7"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="P5d-PP-S85" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="886.875" y="1.056338028169014"/>
+        </scene>
     </scenes>
     <resources>
         <image name="Medicine" width="234" height="277"/>

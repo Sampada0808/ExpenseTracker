@@ -18,13 +18,7 @@ class NavBarViewController: UIViewController {
         helpBgIcon.layer.cornerRadius = CGFloat(25)
         helpBgIcon.transform = CGAffineTransform(scaleX: 0.9, y: 0.9)
         helpIconImageView.transform = CGAffineTransform(scaleX: 0.9, y: 0.9)
-        titleNavBar.layer.cornerRadius = CGFloat(20)
-        titleNavBar.layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
-        titleNavBar.clipsToBounds = true
-        titleNavBar.layer.shadowRadius =  CGFloat(5)
-        titleNavBar.layer.shadowOpacity =  0.2
-        titleNavBar.layer.shadowOffset =  CGSize(width: 0, height: 5)
-        titleNavBar.layer.masksToBounds =  false
+        titleNavBar.applyCardStyle()
         
         NSLayoutConstraint.activate([
             SpendlyAppLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 4),
@@ -36,6 +30,11 @@ class NavBarViewController: UIViewController {
             
         )
 
+    }
+    
+    func config(){
+        let nib  =  NavBarViewController(nibName: "NavBarViewController", bundle: nil)
+        addChild(nib)
     }
 
 }

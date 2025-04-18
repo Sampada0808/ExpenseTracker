@@ -103,19 +103,16 @@ class HomeViewController: UIViewController {
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
         
-        // Rounded corners for title bar
-        titleBarView.layer.cornerRadius = 20
-        titleBarView.layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
-        titleBarView.clipsToBounds = true
+        titleBarView.applyCardStyle()
+        titleBarView.pinToTop(of: self.view)
+        categoryTableView.tableViewConstraints(for: self.view, from: titleBarView)
+
         
-        // Add shadow to title bar and add button
-        [titleBarView, addButton].forEach {
-            $0?.layer.shadowColor = UIColor.black.cgColor
-            $0?.layer.shadowRadius = 5
-            $0?.layer.shadowOpacity = 0.2
-            $0?.layer.shadowOffset = CGSize(width: 0, height: 5)
-            $0?.layer.masksToBounds = false
-        }
+        addButton.layer.shadowColor = UIColor.black.cgColor
+        addButton.layer.shadowRadius = 5
+        addButton.layer.shadowOpacity = 0.2
+        addButton.layer.shadowOffset = CGSize(width: 0, height: 5)
+        addButton.layer.masksToBounds = false
         
         // Add button position and round
         let buttonSize: CGFloat = 60
@@ -126,31 +123,6 @@ class HomeViewController: UIViewController {
 
         updateTotalExpenseLabel()
         addAllLabels()
-        // Assuming your navBarContainer is already added to the view hierarchy
-
-        // Disable autoresizing mask translation for auto layout
-        titleBarView.translatesAutoresizingMaskIntoConstraints = false
-
-        // Activate constraints for navBarContainer
-        NSLayoutConstraint.activate([
-            titleBarView.topAnchor.constraint(equalTo: view.topAnchor, constant: 0), // Space from top of safe area
-            titleBarView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 0), // Left edge to screen edge
-            titleBarView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: 0), // Right edge to screen edge
-        ])
-
-        // Assuming your categoryTableView is already added to the view hierarchy
-
-        // Disable autoresizing mask translation for auto layout
-        categoryTableView.translatesAutoresizingMaskIntoConstraints = false
-
-        // Activate constraints for categoryTableView
-        NSLayoutConstraint.activate([
-            categoryTableView.topAnchor.constraint(equalTo: titleBarView.bottomAnchor, constant: 25), // 25 points space from the navbar
-            categoryTableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 0), // Left edge to screen edge
-            categoryTableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: 0), // Right edge to screen edge
-            categoryTableView.bottomAnchor.constraint(equalTo: view.bottomAnchor) // Optional: Set bottom anchor if you want it to extend fully down
-        ])
-
     }
     
     deinit {
