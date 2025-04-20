@@ -6,6 +6,9 @@ class CategoricalExpenseViewController: UIViewController {
     var selectedCategory: Category?
     var dateLabel: UILabel = UILabel()
     var backButton: UIButton = UIButton(type: .system)
+    var dailyExpenseTable = UITableView()
+    var tableHeightConstraint: NSLayoutConstraint?
+
 
     var expenses: [ExpenseItem] = [
         ExpenseItem(item: "Mango", qty: "1", unit: "Kg", price: 100.50),
@@ -16,9 +19,7 @@ class CategoricalExpenseViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        print("✅ viewDidLoad")
-
-        print("Selected Category: \(selectedCategory?.rawValue ?? "None")")
+        view.backgroundColor = .white
 
         // Custom navbar
         let navBarVc = NavBarViewController(nibName: "NavBarViewController", bundle: nil)
@@ -26,18 +27,35 @@ class CategoricalExpenseViewController: UIViewController {
         navBarView = navBarVc.view
         navBarView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(navBarView)
+        dailyExpenseTable.register(UINib(nibName: "CustomHeaderTableViewCell", bundle: nil), forCellReuseIdentifier: "CustomHeaderTableViewCell")
 
         // Add Back button and label
         addBackButton()
         addLabel()
+        addTableView()
+        
+        // Reload table after initial setup
+            dailyExpenseTable.reloadData()
+
+        DispatchQueue.main.async {
+                self.tableHeightConstraint?.constant = self.dailyExpenseTable.contentSize.height
+            }
+        
+       
     }
 
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
-        print("🔄 viewWillLayoutSubviews")
 
         navBarView.applyCardStyle()
         navBarView.pinToTop(of: view)
+        setupTableHeader()
+        setupFooter()
+        
+    }
+    
+    override func viewDidLayoutSubviews() {
+        tableHeightConstraint?.constant = dailyExpenseTable.contentSize.height
     }
 
     func addBackButton() {
@@ -69,4 +87,90 @@ class CategoricalExpenseViewController: UIViewController {
     @objc func backButtonTapped() {
         navigationController?.popViewController(animated: true)
     }
+    
+    func addTableView(){
+        dailyExpenseTable.translatesAutoresizingMaskIntoConstraints = false
+        dailyExpenseTable.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
+
+        view.addSubview(dailyExpenseTable)
+        
+        NSLayoutConstraint.activate([
+            dailyExpenseTable.topAnchor.constraint(equalTo: dateLabel.bottomAnchor, constant: 10),
+            dailyExpenseTable.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 15),
+            dailyExpenseTable.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -15)
+        ])
+
+        // Add height constraint with temporary value
+        tableHeightConstraint = dailyExpenseTable.heightAnchor.constraint(equalToConstant: 1)
+        tableHeightConstraint?.isActive = true
+
+        dailyExpenseTable.backgroundColor = UIColor.lightGreen
+        
+        dailyExpenseTable.dataSource =  self
+    }
+    
+
+    func setupTableHeader() {
+        
+        if let headerView = Bundle.main.loadNibNamed("CustomHeaderTableViewCell", owner: self, options: nil)?.first as? CustomHeaderTableViewCell {
+            
+            headerView.setNeedsLayout()
+            headerView.layoutIfNeeded()
+            
+            let targetSize = CGSize(width: dailyExpenseTable.frame.width, height: UIView.layoutFittingCompressedSize.height)
+            let height = headerView.systemLayoutSizeFitting(targetSize).height
+            
+            headerView.frame = CGRect(x: 0, y: 0, width: dailyExpenseTable.frame.width, height: height)
+            headerView.setHeader()
+            
+            dailyExpenseTable.tableHeaderView = headerView
+            dailyExpenseTable.layer.cornerRadius = CGFloat(10)
+            dailyExpenseTable.layer.shadowColor = UIColor.black.cgColor
+            dailyExpenseTable.layer.shadowRadius = 5
+            dailyExpenseTable.layer.shadowOpacity = 0.2
+            dailyExpenseTable.layer.shadowOffset = CGSize(width: 0, height: 5)
+            dailyExpenseTable.layer.masksToBounds = false
+        }
+    }
+    
+    
+    func setupFooter(){
+        if let footerView =
+            Bundle.main.loadNibNamed("CustomHeaderTableViewCell", owner: self, options: nil)?.first as? CustomHeaderTableViewCell {
+            footerView.setNeedsLayout()
+            footerView.layoutIfNeeded()
+            footerView.setFooter()
+            
+            let targetSize = CGSize(width: dailyExpenseTable.frame.width, height: UIView.layoutFittingCompressedSize.height)
+            let height = footerView.systemLayoutSizeFitting(targetSize).height
+            
+            footerView.frame = CGRect(x: 0, y: 0, width: dailyExpenseTable.frame.width, height: height)
+            
+            dailyExpenseTable.tableFooterView = footerView
+            
+        }
+    }
+
+
+
+
+
+}
+
+extension CategoricalExpenseViewController: UITableViewDataSource {
+  func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+      return expenses.count
+  }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "CustomHeaderTableViewCell", for: indexPath) as! CustomHeaderTableViewCell
+
+        let expense = expenses[indexPath.row]
+        cell.configure(with: expense)  
+
+        return cell
+    }
+
+
+
 }
