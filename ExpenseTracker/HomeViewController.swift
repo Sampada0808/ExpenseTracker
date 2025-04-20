@@ -9,6 +9,7 @@ class HomeViewController: UIViewController {
     // MARK: - Data Sources
     var categoricalExpenses: [CategoryExpenseDataModel] = []
     var dailyExpense: [DailyExpense] = []
+        
     
     // MARK: - Computed Property
     var totalExpenseAmount: Double {
@@ -98,6 +99,7 @@ class HomeViewController: UIViewController {
         categoryTableView.estimatedRowHeight = 72
         categoryTableView.rowHeight = UITableView.automaticDimension
         categoryTableView.separatorStyle = .none
+
     }
 
     override func viewWillLayoutSubviews() {
@@ -250,6 +252,28 @@ class HomeViewController: UIViewController {
 
         return models.sorted(by: { $0.amount > $1.amount })
     }
+    
+    @objc func detailExpenseTapped(_ sender: CategoryTapGestureRecognizer) {
+        guard let indexPath = sender.indexPath else { return }
+        print("Tapped")
+
+        let selectedCategory = categoricalExpenses[indexPath.row].categoryName
+        print(selectedCategory)
+        print(type(of: selectedCategory))
+
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        guard let detailVC = storyboard.instantiateViewController(withIdentifier: "CategoricalExpenseViewController") as? CategoricalExpenseViewController else {
+            fatalError("CategoricalExpenseViewController not found in storyboard.")
+        }
+
+        detailVC.selectedCategory = selectedCategory
+        print(navigationController == nil ? "nav controller is nil" : "nav controller is present")
+        self.navigationController?.setNavigationBarHidden(true, animated: false)
+        navigationController?.pushViewController(detailVC, animated: true)
+    }
+
+
+    
 }
 
 // MARK: - UITableViewDataSource
@@ -260,16 +284,26 @@ extension HomeViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-
         let detail = categoricalExpenses[indexPath.row]
-
+        
         guard let cell = tableView.dequeueReusableCell(
             withIdentifier: CategoryExpenseTableViewCell.identifier,
             for: indexPath) as? CategoryExpenseTableViewCell else {
-                return UITableViewCell()
+            return UITableViewCell()
         }
+
+        let recognizer = CategoryTapGestureRecognizer(target: self, action: #selector(detailExpenseTapped))
+        recognizer.indexPath = indexPath
+        cell.categoryCellView.isUserInteractionEnabled = true  // Ensure it's tappable
+        cell.categoryCellView.addGestureRecognizer(recognizer)
+        
         cell.selectionStyle = .none
         cell.configure(with: detail)
         return cell
     }
+
+}
+
+class CategoryTapGestureRecognizer: UITapGestureRecognizer {
+    var indexPath: IndexPath?
 }

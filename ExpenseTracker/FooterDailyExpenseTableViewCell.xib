@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="23504" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23506"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="KGk-i7-Jjw" customClass="FooterDailyExpenseTableViewCell" customModule="ExpenseTracker" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
+                <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <stackView opaque="NO" contentMode="scaleToFill" distribution="fillProportionally" translatesAutoresizingMaskIntoConstraints="NO" id="fjW-BD-FX4">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Total Amount:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Nap-TZ-HHz">
+                                <rect key="frame" x="10" y="10" width="163.66666666666666" height="24"/>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="24"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="GfF-KB-dFX">
+                                <rect key="frame" x="183.66666666666666" y="0.0" width="2" height="44"/>
+                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="2" id="mCV-JF-aTM"/>
+                                </constraints>
+                            </view>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="$700.00" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="T6b-tl-F13">
+                                <rect key="frame" x="185.66666666666663" y="10" width="134.33333333333337" height="24"/>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="24"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <constraints>
+                            <constraint firstItem="T6b-tl-F13" firstAttribute="leading" relation="lessThanOrEqual" secondItem="GfF-KB-dFX" secondAttribute="trailing" constant="20" id="1gc-K8-80f"/>
+                            <constraint firstItem="T6b-tl-F13" firstAttribute="centerY" secondItem="fjW-BD-FX4" secondAttribute="centerY" id="6Z5-Ig-OHp"/>
+                            <constraint firstItem="Nap-TZ-HHz" firstAttribute="leading" secondItem="fjW-BD-FX4" secondAttribute="leading" constant="10" id="FIm-vk-dfN"/>
+                            <constraint firstItem="T6b-tl-F13" firstAttribute="top" secondItem="fjW-BD-FX4" secondAttribute="top" constant="10" id="Z8m-6U-rEz"/>
+                            <constraint firstAttribute="bottom" secondItem="Nap-TZ-HHz" secondAttribute="bottom" constant="10" id="axe-ko-fet"/>
+                            <constraint firstItem="GfF-KB-dFX" firstAttribute="top" secondItem="fjW-BD-FX4" secondAttribute="top" id="axt-Hj-QCK"/>
+                            <constraint firstAttribute="bottom" secondItem="GfF-KB-dFX" secondAttribute="bottom" id="hOP-jb-I3X"/>
+                            <constraint firstAttribute="bottom" secondItem="T6b-tl-F13" secondAttribute="bottom" constant="10" id="j7Z-bE-chc"/>
+                            <constraint firstItem="Nap-TZ-HHz" firstAttribute="centerY" secondItem="fjW-BD-FX4" secondAttribute="centerY" id="kV8-OK-yhX"/>
+                            <constraint firstItem="Nap-TZ-HHz" firstAttribute="top" secondItem="fjW-BD-FX4" secondAttribute="top" constant="10" id="nx7-Te-Zfw"/>
+                            <constraint firstItem="GfF-KB-dFX" firstAttribute="leading" secondItem="Nap-TZ-HHz" secondAttribute="trailing" constant="10" id="qGb-GN-Dew"/>
+                        </constraints>
+                    </stackView>
+                </subviews>
+                <constraints>
+                    <constraint firstAttribute="trailing" secondItem="fjW-BD-FX4" secondAttribute="trailing" id="GjG-GD-9Kr"/>
+                    <constraint firstItem="fjW-BD-FX4" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" id="LmU-7G-rWR"/>
+                    <constraint firstAttribute="bottom" secondItem="fjW-BD-FX4" secondAttribute="bottom" id="Tgl-hm-2Ux"/>
+                    <constraint firstItem="fjW-BD-FX4" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" id="yKK-PT-VSl"/>
+                </constraints>
+            </tableViewCellContentView>
+            <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
+            <connections>
+                <outlet property="finalAmount" destination="T6b-tl-F13" id="SwH-JA-cHx"/>
+                <outlet property="totalAmountLabel" destination="Nap-TZ-HHz" id="ZcZ-zt-OZu"/>
+            </connections>
+            <point key="canvasLocation" x="138.93129770992365" y="19.718309859154932"/>
+        </tableViewCell>
+    </objects>
+</document>
