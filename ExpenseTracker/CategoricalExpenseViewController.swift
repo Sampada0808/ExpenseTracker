@@ -4,18 +4,14 @@ class CategoricalExpenseViewController: UIViewController {
 
     var navBarView: UIView!
     var selectedCategory: Category?
+    var filteredDailyExpenses: [DailyExpense] = []
     var dateLabel: UILabel = UILabel()
     var backButton: UIButton = UIButton(type: .system)
     var dailyExpenseTable = UITableView()
     var tableHeightConstraint: NSLayoutConstraint?
+    
+    var containerView  = UIView()
 
-
-    var expenses: [ExpenseItem] = [
-        ExpenseItem(item: "Mango", qty: "1", unit: "Kg", price: 100.50),
-        ExpenseItem(item: "Cherry", qty: "500", unit: "gm", price: 100.50),
-        ExpenseItem(item: "Strawberry", qty: "200", unit: "gm", price: 100.50),
-        ExpenseItem(item: "Pineapple", qty: "100", unit: "gm", price: 100.50)
-    ]
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -156,7 +152,7 @@ class CategoricalExpenseViewController: UIViewController {
             Bundle.main.loadNibNamed("CustomHeaderTableViewCell", owner: self, options: nil)?.first as? CustomHeaderTableViewCell {
             footerView.setNeedsLayout()
             footerView.layoutIfNeeded()
-            footerView.setFooter()
+            footerView.setFooter(with: filteredDailyExpenses)
             
             let targetSize = CGSize(width: dailyExpenseTable.frame.width, height: UIView.layoutFittingCompressedSize.height)
             let height = footerView.systemLayoutSizeFitting(targetSize).height
@@ -175,22 +171,32 @@ class CategoricalExpenseViewController: UIViewController {
 }
 
 extension CategoricalExpenseViewController: UITableViewDataSource {
-  func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-      return expenses.count
-  }
-    
+
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return filteredDailyExpenses.count
+    }
+
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return filteredDailyExpenses[section].item.count
+    }
+
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let dailyExpense = filteredDailyExpenses[indexPath.section]
+        let expense = dailyExpense.item[indexPath.row]
+        let category = dailyExpense.category
         let cell = tableView.dequeueReusableCell(withIdentifier: "CustomHeaderTableViewCell", for: indexPath) as! CustomHeaderTableViewCell
-
-        let expense = expenses[indexPath.row]
-        cell.configure(with: expense)  
-
+        cell.configure(with: expense, category: category)
         return cell
     }
 
-
-
+//    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+//        let date = filteredDailyExpenses[section].date
+//        let formatter = DateFormatter()
+//        formatter.dateStyle = .medium
+//        return formatter.string(from: date)
+//    }
 }
+
 
 extension UIView {
     
@@ -207,4 +213,3 @@ extension UIView {
         layer.addSublayer(shapeLayer)
     }
 }
-

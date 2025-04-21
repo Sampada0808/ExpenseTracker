@@ -17,6 +17,24 @@ class CustomHeaderTableViewCell: UITableViewCell {
         // Initialization code
     }
     
+    func localizedCurrencyString(from amount: Double) -> String {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .currency
+        formatter.locale = Locale.current // Automatically picks user's locale
+        return formatter.string(from: NSNumber(value: amount)) ?? "\(amount)"
+    }
+    
+    func totalExpense(from dailyExpenses: [DailyExpense]) -> Double {
+        return dailyExpenses.flatMap { $0.item }.reduce(0) { $0 + $1.price }
+    }
+
+    func localizedTotalString(from dailyExpenses: [DailyExpense]) -> String {
+        let total = totalExpense(from: dailyExpenses)
+        return localizedCurrencyString(from: total)
+    }
+
+
+    
     func settingLabelStyles(){
         firstLabel.font = UIFont.style(.body)
         secondLabel.font = UIFont.style(.body)
@@ -24,15 +42,21 @@ class CustomHeaderTableViewCell: UITableViewCell {
         
     }
     
-    func configure(with expense: ExpenseItem) {
+    func configure(with expense: ExpenseItem, category: Category) {
         firstLabel.text = expense.item
         secondLabel.text = "\(expense.qty) \(expense.unit)"
-        thirdLabel.text = "₹\(expense.price)"
-        bottomLine.isHidden =  true
-        [firstLabel,secondLabel,thirdLabel].forEach {
+        thirdLabel.text = localizedCurrencyString(from: expense.price)
+
+        bottomLine.isHidden = true
+        firstLeftLine.backgroundColor = .clear
+        secondRightLine.backgroundColor = .clear
+
+        [firstLabel, secondLabel, thirdLabel].forEach {
             $0?.font = UIFont.style(.secondaryText)
+            $0?.textColor = category.color
         }
-        }
+    }
+
     func setHeader(){
         topLine.isHidden  = true
         bottomLine.isHidden =  true
@@ -42,17 +66,22 @@ class CustomHeaderTableViewCell: UITableViewCell {
         settingLabelStyles()
     }
     
-    func setFooter(){
+    func setFooter(with dailyExpenses: [DailyExpense]) {
+        let totalString = localizedTotalString(from: dailyExpenses)
+        
         firstLeftLine.backgroundColor = .clear
         firstLabel.textColor = .clear
-        secondLabel.text =  "Amount : "
-        thirdLabel.text = "$700.00"
-        bottomLine.backgroundColor =  .clear
+        secondLabel.text = "Amount :"
+        thirdLabel.text = totalString
+        bottomLine.backgroundColor = .clear
         firstLeftLine.backgroundColor = .clear
-        [secondLabel,thirdLabel].forEach {
+        
+        [secondLabel, thirdLabel].forEach {
             $0?.textColor = UIColor.darkGreen
         }
+        
         settingLabelStyles()
     }
+
     
 }
