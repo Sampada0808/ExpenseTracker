@@ -43,6 +43,7 @@ class CustomHeaderTableViewCell: UITableViewCell {
     }
     
     func configure(with expense: ExpenseItem, category: Category) {
+        print("Printing\(expense.item)")
         firstLabel.text = expense.item
         secondLabel.text = "\(expense.qty) \(expense.unit)"
         thirdLabel.text = localizedCurrencyString(from: expense.price)
@@ -66,22 +67,24 @@ class CustomHeaderTableViewCell: UITableViewCell {
         settingLabelStyles()
     }
     
-    func setFooter(with dailyExpenses: [DailyExpense]) {
-        let totalString = localizedTotalString(from: dailyExpenses)
-        
+    func setFooter(with dailyExpense: DailyExpense) {
+        let total = dailyExpense.item.reduce(0) { $0 + $1.price }
+        let totalString = localizedCurrencyString(from: total)
+
         firstLeftLine.backgroundColor = .clear
         firstLabel.textColor = .clear
         secondLabel.text = "Amount :"
         thirdLabel.text = totalString
         bottomLine.backgroundColor = .clear
         firstLeftLine.backgroundColor = .clear
-        
+
         [secondLabel, thirdLabel].forEach {
             $0?.textColor = UIColor.darkGreen
         }
-        
+
         settingLabelStyles()
     }
+
 
     
 }

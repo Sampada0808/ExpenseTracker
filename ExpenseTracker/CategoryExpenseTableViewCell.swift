@@ -41,7 +41,15 @@ class CategoryExpenseTableViewCell: UITableViewCell {
         categoryName.font = UIFont.style(.secondaryText)
         
         // Format and set the amount
-        amountLabel.text = "$\(String(format: "%.2f", model.amount))"
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .currency
+        formatter.locale = Locale.current
+        if let formattedAmount = formatter.string(from: NSNumber(value: model.amount)) {
+            amountLabel.text = formattedAmount
+        } else {
+            amountLabel.text = "\(model.amount)" // fallback, just in case
+        }
+
         amountLabel.textColor = model.categoryName.color
         amountLabel.font = UIFont.style(.secondaryText)
     }

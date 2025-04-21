@@ -5,16 +5,17 @@ class CategoricalExpenseViewController: UIViewController {
     var navBarView: UIView!
     var selectedCategory: Category?
     var filteredDailyExpenses: [DailyExpense] = []
-    var dateLabel: UILabel = UILabel()
     var backButton: UIButton = UIButton(type: .system)
-    var dailyExpenseTable = UITableView()
     var tableHeightConstraint: NSLayoutConstraint?
+    var dateToDateExpenses : DailyExpense!
+    var tableDataSources: [DailyExpenseTableDataSource] = []
+
     
-    var containerView  = UIView()
 
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        print("Here")
         view.backgroundColor = .white
 
         // Custom navbar
@@ -23,19 +24,38 @@ class CategoricalExpenseViewController: UIViewController {
         navBarView = navBarVc.view
         navBarView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(navBarView)
-        dailyExpenseTable.register(UINib(nibName: "CustomHeaderTableViewCell", bundle: nil), forCellReuseIdentifier: "CustomHeaderTableViewCell")
+        
 
         // Add Back button and label
         addBackButton()
-        addLabel()
-        addTableView()
         
-        // Reload table after initial setup
-            dailyExpenseTable.reloadData()
+        let scrollView = UIScrollView()
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(scrollView)
 
-        DispatchQueue.main.async {
-                self.tableHeightConstraint?.constant = self.dailyExpenseTable.contentSize.height
-            }
+        NSLayoutConstraint.activate([
+            scrollView.topAnchor.constraint(equalTo: backButton.bottomAnchor, constant: 5),
+            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 0),
+            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: 0),
+            scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+        ])
+        
+        // Content View inside Scroll View
+           let contentView = UIView()
+           contentView.translatesAutoresizingMaskIntoConstraints = false
+           scrollView.addSubview(contentView)
+
+           NSLayoutConstraint.activate([
+               contentView.topAnchor.constraint(equalTo: scrollView.topAnchor),
+               contentView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
+               contentView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
+               contentView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
+               contentView.widthAnchor.constraint(equalTo: scrollView.widthAnchor)
+           ])
+        
+        addMultipleTables(in: contentView)
+        
+    
         
        
     }
@@ -45,35 +65,149 @@ class CategoricalExpenseViewController: UIViewController {
 
         navBarView.applyCardStyle()
         navBarView.pinToTop(of: view)
-        setupTableHeader()
-        setupFooter()
         
     }
     
     override func viewDidLayoutSubviews() {
-        tableHeightConstraint?.constant = dailyExpenseTable.contentSize.height
-            // Add dashed line only once
-            if view.viewWithTag(999) == nil {
-                let lineView = UIView()
-                lineView.tag = 999
-                lineView.translatesAutoresizingMaskIntoConstraints = false
-                view.addSubview(lineView)
-                
-                NSLayoutConstraint.activate([
-                    lineView.topAnchor.constraint(equalTo: dailyExpenseTable.bottomAnchor, constant: 25),
-                    lineView.leadingAnchor.constraint(equalTo: dailyExpenseTable.leadingAnchor),
-                    lineView.trailingAnchor.constraint(equalTo: dailyExpenseTable.trailingAnchor),
-                    lineView.heightAnchor.constraint(equalToConstant: 1)
-                ])
-                
-                view.layoutIfNeeded() // Make sure the frame is set
-                lineView.addHorizontalDashedLine()
-            }
+        super.viewDidLayoutSubviews()
+        
     }
 
+    
+    func addContainerView(in contentView: UIView, below topAnchorView: UIView, spacing: CGFloat) -> UIView {
+        let containerView = UIView()
+        containerView.translatesAutoresizingMaskIntoConstraints = false
+        contentView.addSubview(containerView)
+
+        NSLayoutConstraint.activate([
+            containerView.topAnchor.constraint(equalTo: topAnchorView == contentView ? contentView.topAnchor : topAnchorView.bottomAnchor, constant: spacing),
+            containerView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            containerView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor)
+        ])
+
+        return containerView
+    }
+
+
+
+
+    func addLabel(to containerView: UIView, from dailyExpense: DailyExpense) -> UILabel {
+        let dateLabel = UILabel()
+        let formatter = DateFormatter()
+        formatter.dateStyle = .long
+        formatter.timeStyle = .none
+        formatter.locale = Locale(identifier: "en_US")
+
+        if Calendar.current.isDateInToday(dailyExpense.date) {
+            dateLabel.text = "Today"
+        } else {
+            dateLabel.text = formatter.string(from: dailyExpense.date)
+        }
+
+        dateLabel.font = UIFont.style(.body)
+        dateLabel.textColor = .gray
+        dateLabel.translatesAutoresizingMaskIntoConstraints = false
+
+        containerView.addSubview(dateLabel)
+
+        NSLayoutConstraint.activate([
+            dateLabel.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 15),
+            dateLabel.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 5)
+        ])
+
+        return dateLabel
+    }
+
+    func addTableView(for dailyExpense: DailyExpense, in containerView: UIView, below dateLabel: UILabel) {
+        let newTableView = UITableView()
+        newTableView.translatesAutoresizingMaskIntoConstraints = false
+        newTableView.register(UINib(nibName: "CustomHeaderTableViewCell", bundle: nil), forCellReuseIdentifier: "CustomHeaderTableViewCell")
+        newTableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
+        newTableView.backgroundColor = UIColor.lightGreen
+        let dataSource = DailyExpenseTableDataSource(dailyExpense: dailyExpense)
+        tableDataSources.append(dataSource)
+        newTableView.dataSource = dataSource
+
+
+
+        containerView.addSubview(newTableView)
+        setupFooter(for: newTableView, with: dailyExpense)
+        setupTableHeader(for: newTableView)
+
+        NSLayoutConstraint.activate([
+            newTableView.topAnchor.constraint(equalTo: dateLabel.bottomAnchor, constant: 10),
+            newTableView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 15),
+            newTableView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -15)
+        ])
+
+        let tableHeightConstraint = newTableView.heightAnchor.constraint(equalToConstant: 100)
+        tableHeightConstraint.isActive = true
+
+        newTableView.reloadData()
+
+        DispatchQueue.main.async {
+            tableHeightConstraint.constant = newTableView.contentSize.height
+        }
+
+        // Add dashed line below the table
+        let lineView = UIView()
+        lineView.translatesAutoresizingMaskIntoConstraints = false
+        containerView.addSubview(lineView)
+
+        NSLayoutConstraint.activate([
+            lineView.topAnchor.constraint(equalTo: newTableView.bottomAnchor, constant: 25),
+            lineView.leadingAnchor.constraint(equalTo: newTableView.leadingAnchor),
+            lineView.trailingAnchor.constraint(equalTo: newTableView.trailingAnchor),
+            lineView.heightAnchor.constraint(equalToConstant: 1)
+        ])
+
+        // Ensure layout pass is complete before drawing dashed line
+        DispatchQueue.main.async {
+            lineView.setNeedsLayout()
+            lineView.layoutIfNeeded()
+            lineView.addHorizontalDashedLine()
+            NSLayoutConstraint.activate([
+                containerView.bottomAnchor.constraint(equalTo: lineView.bottomAnchor)
+            ])
+
+        }
+    }
+
+    
+    func addMultipleTables(in contentView: UIView) {
+        var previousContainer: UIView = contentView
+
+        if filteredDailyExpenses.isEmpty {
+            print("No filtered expenses found.")
+            return
+        }
+        
+        let sortedExpenses = filteredDailyExpenses.sorted { $0.date > $1.date }
+
+        for (index, dailyExpense) in sortedExpenses.enumerated() {
+            let spacing: CGFloat = (index == 0) ? 0 : 5
+            let containerView = addContainerView(in: contentView, below: previousContainer, spacing: spacing)
+
+            let dateLabel = addLabel(to: containerView, from: dailyExpense)
+            addTableView(for: dailyExpense, in: containerView, below: dateLabel)
+
+            previousContainer = containerView
+        }
+
+        // Anchor last container to bottom of contentView
+        previousContainer.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -20).isActive = true
+    }
+
+
+
+
+
+
+
+
     func addBackButton() {
-        backButton.setTitle("<", for: .normal)
-        backButton.titleLabel?.font = UIFont.style(.h2)
+        backButton.setTitle("< Back", for: .normal)
+        backButton.titleLabel?.font = UIFont.style(.h3)
         backButton.addTarget(self, action: #selector(backButtonTapped), for: .touchUpInside)
         backButton.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(backButton)
@@ -84,46 +218,20 @@ class CategoricalExpenseViewController: UIViewController {
         ])
     }
 
-    func addLabel() {
-        dateLabel.text = "12 April 2025"
-        dateLabel.font = UIFont.style(.body)
-        dateLabel.textColor = .gray
-        dateLabel.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(dateLabel)
 
-        NSLayoutConstraint.activate([
-            dateLabel.leadingAnchor.constraint(equalTo: backButton.trailingAnchor, constant: 4),
-                    dateLabel.centerYAnchor.constraint(equalTo: backButton.centerYAnchor)
-        ])
-    }
+
 
     @objc func backButtonTapped() {
         navigationController?.popViewController(animated: true)
     }
     
-    func addTableView(){
-        dailyExpenseTable.translatesAutoresizingMaskIntoConstraints = false
-        dailyExpenseTable.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
-
-        view.addSubview(dailyExpenseTable)
-        
-        NSLayoutConstraint.activate([
-            dailyExpenseTable.topAnchor.constraint(equalTo: dateLabel.bottomAnchor, constant: 10),
-            dailyExpenseTable.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 15),
-            dailyExpenseTable.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -15)
-        ])
-
-        // Add height constraint with temporary value
-        tableHeightConstraint = dailyExpenseTable.heightAnchor.constraint(equalToConstant: 1)
-        tableHeightConstraint?.isActive = true
-
-        dailyExpenseTable.backgroundColor = UIColor.lightGreen
-        
-        dailyExpenseTable.dataSource =  self
-    }
+    
     
 
-    func setupTableHeader() {
+
+    
+
+    func setupTableHeader(for dailyExpenseTable: UITableView) {
         
         if let headerView = Bundle.main.loadNibNamed("CustomHeaderTableViewCell", owner: self, options: nil)?.first as? CustomHeaderTableViewCell {
             
@@ -147,20 +255,18 @@ class CategoricalExpenseViewController: UIViewController {
     }
     
     
-    func setupFooter(){
-        if let footerView =
-            Bundle.main.loadNibNamed("CustomHeaderTableViewCell", owner: self, options: nil)?.first as? CustomHeaderTableViewCell {
+    func setupFooter(for dailyExpenseTable: UITableView, with dailyExpense: DailyExpense){
+        if let footerView = Bundle.main.loadNibNamed("CustomHeaderTableViewCell", owner: self, options: nil)?.first as? CustomHeaderTableViewCell {
             footerView.setNeedsLayout()
             footerView.layoutIfNeeded()
-            footerView.setFooter(with: filteredDailyExpenses)
-            
+            footerView.setFooter(with: dailyExpense) // ← Pass as single-day array
+
             let targetSize = CGSize(width: dailyExpenseTable.frame.width, height: UIView.layoutFittingCompressedSize.height)
             let height = footerView.systemLayoutSizeFitting(targetSize).height
-            
+
             footerView.frame = CGRect(x: 0, y: 0, width: dailyExpenseTable.frame.width, height: height)
-            
+
             dailyExpenseTable.tableFooterView = footerView
-            
         }
     }
 
@@ -168,33 +274,7 @@ class CategoricalExpenseViewController: UIViewController {
 
 
 
-}
 
-extension CategoricalExpenseViewController: UITableViewDataSource {
-
-    func numberOfSections(in tableView: UITableView) -> Int {
-        return filteredDailyExpenses.count
-    }
-
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return filteredDailyExpenses[section].item.count
-    }
-
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let dailyExpense = filteredDailyExpenses[indexPath.section]
-        let expense = dailyExpense.item[indexPath.row]
-        let category = dailyExpense.category
-        let cell = tableView.dequeueReusableCell(withIdentifier: "CustomHeaderTableViewCell", for: indexPath) as! CustomHeaderTableViewCell
-        cell.configure(with: expense, category: category)
-        return cell
-    }
-
-//    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-//        let date = filteredDailyExpenses[section].date
-//        let formatter = DateFormatter()
-//        formatter.dateStyle = .medium
-//        return formatter.string(from: date)
-//    }
 }
 
 
@@ -213,3 +293,27 @@ extension UIView {
         layer.addSublayer(shapeLayer)
     }
 }
+
+class DailyExpenseTableDataSource: NSObject, UITableViewDataSource {
+    let dailyExpense: DailyExpense
+
+    init(dailyExpense: DailyExpense) {
+        self.dailyExpense = dailyExpense
+    }
+
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return dailyExpense.item.count
+    }
+
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let expense = dailyExpense.item[indexPath.row]
+        let category = dailyExpense.category
+        let cell = tableView.dequeueReusableCell(withIdentifier: "CustomHeaderTableViewCell", for: indexPath) as! CustomHeaderTableViewCell
+        print("Expense : \(expense) category:\(category)")
+        cell.configure(with: expense, category: category)
+        return cell
+    }
+}
+
+
+
