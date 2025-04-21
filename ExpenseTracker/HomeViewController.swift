@@ -4,13 +4,115 @@ class HomeViewController: UIViewController {
 
     // MARK: - IBOutlets
     @IBOutlet weak var categoryTableView: UITableView!
-    var titleBarView: UIView!
+    var titleBarView = UIView()
     
     // MARK: - Data Sources
-    var categoricalExpenses: [CategoryExpenseDataModel] = []
-    var dailyExpense: [DailyExpense] =  []
+//    var categoricalExpenses: [CategoryExpenseDataModel] = []
+//    var dailyExpense: [DailyExpense] =  []
     
-    
+    var categoricalExpenses: [CategoryExpenseDataModel] = [
+            CategoryExpenseDataModel(icon: Category.medicine.image, categoryName: .medicine, amount: 350),
+            CategoryExpenseDataModel(icon: Category.doctor.image, categoryName: .doctor, amount: 800),
+            CategoryExpenseDataModel(icon: Category.groceries.image, categoryName: .groceries, amount: 1200),
+            CategoryExpenseDataModel(icon: Category.snacks.image, categoryName: .snacks, amount: 150),
+            CategoryExpenseDataModel(icon: Category.fruits.image, categoryName: .fruits, amount: 300),
+            CategoryExpenseDataModel(icon: Category.vegetables.image, categoryName: .vegetables, amount: 250),
+            CategoryExpenseDataModel(icon: Category.online.image, categoryName: .online, amount: 600),
+            CategoryExpenseDataModel(icon: Category.miscellaneous.image, categoryName: .miscellaneous, amount: 400)
+        ]
+
+        var dailyExpense: [DailyExpense] = [
+            DailyExpense(
+                date: Date(), // Today
+                category: .medicine,
+                item: [
+                    ExpenseItem(item: "Paracetamol", qty: "2", unit: "Strips", price: 100),
+                    ExpenseItem(item: "Bandage", qty: "1", unit: "Pack", price: 50),
+                    ExpenseItem(item: "Cough Syrup", qty: "1", unit: "Bottle", price: 200)
+                ]
+            ),
+            DailyExpense(
+                date: Calendar.current.date(byAdding: .day, value: 1, to: Date())!,
+                category: .medicine,
+                item: [
+                    ExpenseItem(item: "Migraine", qty: "1", unit: "Strips", price: 100),
+                    ExpenseItem(item: "Bandage", qty: "1", unit: "Pack", price: 50),
+                    ExpenseItem(item: "Cough Syrup", qty: "1", unit: "Bottle", price: 200)
+                ]
+            ),
+            
+            DailyExpense(
+                date: Calendar.current.date(byAdding: .day, value: 2, to: Date())!,
+                category: .medicine,
+                item: [
+                    ExpenseItem(item: "Migraine", qty: "1", unit: "Strips", price: 100),
+                    ExpenseItem(item: "Bandage", qty: "1", unit: "Pack", price: 50),
+                    ExpenseItem(item: "Cough Syrup", qty: "1", unit: "Bottle", price: 200)
+                ]
+            ),
+            DailyExpense(
+                date: Calendar.current.date(byAdding: .day, value: -1, to: Date())!,
+                category: .groceries,
+                item: [
+                    ExpenseItem(item: "Rice", qty: "2", unit: "Kg", price: 180),
+                    ExpenseItem(item: "Pulses", qty: "1", unit: "Kg", price: 120),
+                    ExpenseItem(item: "Oil", qty: "1", unit: "L", price: 150)
+                ]
+            ),
+            DailyExpense(
+                date: Calendar.current.date(byAdding: .day, value: -2, to: Date())!,
+                category: .doctor,
+                item: [
+                    ExpenseItem(item: "Consultation", qty: "1", unit: "Visit", price: 800)
+                ]
+            ),
+            DailyExpense(
+                date: Calendar.current.date(byAdding: .day, value: -3, to: Date())!,
+                category: .snacks,
+                item: [
+                    ExpenseItem(item: "Chips", qty: "3", unit: "Packets", price: 90),
+                    ExpenseItem(item: "Cookies", qty: "1", unit: "Box", price: 60)
+                ]
+            ),
+            DailyExpense(
+                date: Calendar.current.date(byAdding: .day, value: -4, to: Date())!,
+                category: .fruits,
+                item: [
+                    ExpenseItem(item: "Apples", qty: "1", unit: "Kg", price: 150),
+                    ExpenseItem(item: "Bananas", qty: "1", unit: "Dozen", price: 100),
+                    ExpenseItem(item: "Oranges", qty: "1", unit: "Kg", price: 50)
+                ]
+            ),
+            DailyExpense(
+                date: Calendar.current.date(byAdding: .day, value: -5, to: Date())!,
+                category: .vegetables,
+                item: [
+                    ExpenseItem(item: "Tomatoes", qty: "1", unit: "Kg", price: 40),
+                    ExpenseItem(item: "Onions", qty: "1", unit: "Kg", price: 30),
+                    ExpenseItem(item: "Spinach", qty: "1", unit: "Bunch", price: 20),
+                    ExpenseItem(item: "Cauliflower", qty: "1", unit: "Piece", price: 60),
+                    ExpenseItem(item: "Potatoes", qty: "2", unit: "Kg", price: 100)
+                ]
+            ),
+            DailyExpense(
+                date: Calendar.current.date(byAdding: .day, value: -6, to: Date())!,
+                category: .online,
+                item: [
+                    ExpenseItem(item: "Phone Cover", qty: "1", unit: "Piece", price: 250),
+                    ExpenseItem(item: "Notebook", qty: "2", unit: "Packs", price: 150),
+                    ExpenseItem(item: "Stationery", qty: "1", unit: "Set", price: 200)
+                ]
+            ),
+            DailyExpense(
+                date: Calendar.current.date(byAdding: .day, value: -7, to: Date())!,
+                category: .miscellaneous,
+                item: [
+                    ExpenseItem(item: "Gift Wrap", qty: "2", unit: "Rolls", price: 100),
+                    ExpenseItem(item: "Sticky Notes", qty: "3", unit: "Pads", price: 150),
+                    ExpenseItem(item: "Batteries", qty: "2", unit: "Pairs", price: 150)
+                ]
+            )
+        ]
 
     
 
@@ -84,9 +186,14 @@ class HomeViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let nib  =  NavBarViewController(nibName: "NavBarViewController", bundle: nil)
-        addChild(nib)
-        self.titleBarView = nib.view
+        let navBarVC = NavBarViewController(nibName: "NavBarViewController", bundle: nil)
+        addChild(navBarVC)
+        view.addSubview(navBarVC.view)
+        navBarVC.view.pinToTop(of: view)
+        navBarVC.didMove(toParent: self)
+        self.titleBarView = navBarVC.view
+
+
         
         // Observer for new expense added
         NotificationCenter.default.addObserver(self, selector: #selector(handleExpense), name: NSNotification.Name("com.Spendly.addExpense"), object: nil)
@@ -98,7 +205,6 @@ class HomeViewController: UIViewController {
         view.addSubview(addButton)
         view.addSubview(noExpenseLabel)
         view.addSubview(messageLabel)
-        view.addSubview(titleBarView)
 
 
         // Setup TableView
@@ -108,12 +214,18 @@ class HomeViewController: UIViewController {
         categoryTableView.separatorStyle = .none
 
     }
-
-    override func viewWillLayoutSubviews() {
-        super.viewWillLayoutSubviews()
+    
+    override func viewSafeAreaInsetsDidChange() {
+        super.viewSafeAreaInsetsDidChange()
         
         titleBarView.applyCardStyle()
         titleBarView.pinToTop(of: self.view)
+    }
+
+
+    override func viewWillLayoutSubviews() {
+        super.viewWillLayoutSubviews()
+    
         categoryTableView.tableViewConstraints(for: self.view, from: titleBarView)
 
         
@@ -130,6 +242,15 @@ class HomeViewController: UIViewController {
         addButton.frame = CGRect(x: xPos, y: yPos, width: buttonSize, height: buttonSize)
         addButton.layer.cornerRadius = buttonSize / 2
 
+        updateTotalExpenseLabel()
+        addAllLabels()
+    }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+
+        // Reload table data, update labels
+        categoryTableView.reloadData()
         updateTotalExpenseLabel()
         addAllLabels()
     }
