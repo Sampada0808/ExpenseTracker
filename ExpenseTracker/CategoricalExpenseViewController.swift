@@ -56,6 +56,23 @@ class CategoricalExpenseViewController: UIViewController {
     
     override func viewDidLayoutSubviews() {
         tableHeightConstraint?.constant = dailyExpenseTable.contentSize.height
+            // Add dashed line only once
+            if view.viewWithTag(999) == nil {
+                let lineView = UIView()
+                lineView.tag = 999
+                lineView.translatesAutoresizingMaskIntoConstraints = false
+                view.addSubview(lineView)
+                
+                NSLayoutConstraint.activate([
+                    lineView.topAnchor.constraint(equalTo: dailyExpenseTable.bottomAnchor, constant: 25),
+                    lineView.leadingAnchor.constraint(equalTo: dailyExpenseTable.leadingAnchor),
+                    lineView.trailingAnchor.constraint(equalTo: dailyExpenseTable.trailingAnchor),
+                    lineView.heightAnchor.constraint(equalToConstant: 1)
+                ])
+                
+                view.layoutIfNeeded() // Make sure the frame is set
+                lineView.addHorizontalDashedLine()
+            }
     }
 
     func addBackButton() {
@@ -174,3 +191,20 @@ extension CategoricalExpenseViewController: UITableViewDataSource {
 
 
 }
+
+extension UIView {
+    
+    func addHorizontalDashedLine(color: UIColor = .gray, lineWidth: CGFloat = 1, dashPattern: [NSNumber] = [4, 2]) {
+        let shapeLayer = CAShapeLayer()
+        shapeLayer.strokeColor = color.cgColor
+        shapeLayer.lineWidth = lineWidth
+        shapeLayer.lineDashPattern = dashPattern
+        shapeLayer.frame = bounds
+        
+        let path = CGMutablePath()
+        path.addLines(between: [CGPoint(x: 0, y: bounds.midY), CGPoint(x: bounds.width, y: bounds.midY)])
+        shapeLayer.path = path
+        layer.addSublayer(shapeLayer)
+    }
+}
+

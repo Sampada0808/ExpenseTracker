@@ -43,11 +43,12 @@ class CustomHeaderTableViewCell: UITableViewCell {
     }
     
     func setFooter(){
-        firstLabel.text = ""
+        firstLeftLine.backgroundColor = .clear
+        firstLabel.textColor = .clear
         secondLabel.text =  "Amount : "
         thirdLabel.text = "$700.00"
-        bottomLine.isHidden =  true
-        firstLeftLine.isHidden = true
+        bottomLine.backgroundColor =  .clear
+        firstLeftLine.backgroundColor = .clear
         [secondLabel,thirdLabel].forEach {
             $0?.textColor = UIColor.darkGreen
         }

@@ -7,47 +7,8 @@ class HomeViewController: UIViewController {
     var titleBarView: UIView!
     
     // MARK: - Data Sources
-    var categoricalExpenses: [CategoryExpenseDataModel] = [
-        CategoryExpenseDataModel(icon: Category.medicine.image, categoryName: .medicine, amount: 350),
-        CategoryExpenseDataModel(icon: Category.doctor.image, categoryName: .doctor, amount: 800),
-        CategoryExpenseDataModel(icon: Category.groceries.image, categoryName: .groceries, amount: 1200),
-        CategoryExpenseDataModel(icon: Category.snacks.image, categoryName: .snacks, amount: 150)
-    ]
-    var dailyExpense: [DailyExpense] =  [
-        DailyExpense(
-            date: Date(),
-            category: .medicine,
-            item: [
-                ExpenseItem(item: "Paracetamol", qty: "2", unit: "Strips", price: 100),
-                ExpenseItem(item: "Bandage", qty: "1", unit: "Pack", price: 50),
-                ExpenseItem(item: "Cough Syrup", qty: "1", unit: "Bottle", price: 200)
-            ]
-        ),
-        DailyExpense(
-            date: Calendar.current.date(byAdding: .day, value: -1, to: Date())!,
-            category: .groceries,
-            item: [
-                ExpenseItem(item: "Rice", qty: "2", unit: "Kg", price: 180),
-                ExpenseItem(item: "Pulses", qty: "1", unit: "Kg", price: 120),
-                ExpenseItem(item: "Oil", qty: "1", unit: "L", price: 150)
-            ]
-        ),
-        DailyExpense(
-            date: Calendar.current.date(byAdding: .day, value: -2, to: Date())!,
-            category: .doctor,
-            item: [
-                ExpenseItem(item: "Consultation", qty: "1", unit: "Visit", price: 800)
-            ]
-        ),
-        DailyExpense(
-            date: Calendar.current.date(byAdding: .day, value: -3, to: Date())!,
-            category: .snacks,
-            item: [
-                ExpenseItem(item: "Chips", qty: "3", unit: "Packets", price: 90),
-                ExpenseItem(item: "Cookies", qty: "1", unit: "Box", price: 60)
-            ]
-        )
-    ]
+    var categoricalExpenses: [CategoryExpenseDataModel] = []
+    var dailyExpense: [DailyExpense] =  []
     
 
 
