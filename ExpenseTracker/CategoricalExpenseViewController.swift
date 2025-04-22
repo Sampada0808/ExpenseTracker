@@ -121,7 +121,7 @@ class CategoricalExpenseViewController: UIViewController {
     func addTableView(for dailyExpense: DailyExpense, in containerView: UIView, below dateLabel: UILabel) {
         let newTableView = UITableView()
         newTableView.translatesAutoresizingMaskIntoConstraints = false
-        newTableView.register(UINib(nibName: "CustomHeaderTableViewCell", bundle: nil), forCellReuseIdentifier: "CustomHeaderTableViewCell")
+        newTableView.register(UINib(nibName: "dailyExpenseDataTableViewCell", bundle: nil), forCellReuseIdentifier: "dailyExpenseDataTableViewCell")
         newTableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
         newTableView.backgroundColor = UIColor.lightGreen
         let dataSource = DailyExpenseTableDataSource(dailyExpense: dailyExpense)
@@ -236,7 +236,7 @@ class CategoricalExpenseViewController: UIViewController {
 
     func setupTableHeader(for dailyExpenseTable: UITableView) {
         
-        if let headerView = Bundle.main.loadNibNamed("CustomHeaderTableViewCell", owner: self, options: nil)?.first as? CustomHeaderTableViewCell {
+        if let headerView = Bundle.main.loadNibNamed("CustomHeaderFooterTableViewCell", owner: self, options: nil)?.first as? CustomHeaderFooterTableViewCell {
             
             headerView.setNeedsLayout()
             headerView.layoutIfNeeded()
@@ -259,7 +259,7 @@ class CategoricalExpenseViewController: UIViewController {
     
     
     func setupFooter(for dailyExpenseTable: UITableView, with dailyExpense: DailyExpense){
-        if let footerView = Bundle.main.loadNibNamed("CustomHeaderTableViewCell", owner: self, options: nil)?.first as? CustomHeaderTableViewCell {
+        if let footerView = Bundle.main.loadNibNamed("CustomHeaderFooterTableViewCell", owner: self, options: nil)?.first as? CustomHeaderFooterTableViewCell {
             footerView.setNeedsLayout()
             footerView.layoutIfNeeded()
             footerView.setFooter(with: dailyExpense) // ← Pass as single-day array
@@ -311,7 +311,7 @@ class DailyExpenseTableDataSource: NSObject, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let expense = dailyExpense.item[indexPath.row]
         let category = dailyExpense.category
-        let cell = tableView.dequeueReusableCell(withIdentifier: "CustomHeaderTableViewCell", for: indexPath) as! CustomHeaderTableViewCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: "dailyExpenseDataTableViewCell", for: indexPath) as! dailyExpenseDataTableViewCell
         print("Expense : \(expense) category:\(category)")
         cell.configure(with: expense, category: category)
         cell.isUserInteractionEnabled = true
