@@ -15,12 +15,12 @@ class CategoricalExpenseViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        print("Here")
         view.backgroundColor = .white
 
         // Custom navbar
         let navBarVc = NavBarViewController(nibName: "NavBarViewController", bundle: nil)
         addChild(navBarVc)
+        navBarVc.tipMessage = "Select any of the rows to edit the expense and swift left on of the rows to delete that expense"
         navBarView = navBarVc.view
         navBarView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(navBarView)
@@ -127,6 +127,9 @@ class CategoricalExpenseViewController: UIViewController {
         let dataSource = DailyExpenseTableDataSource(dailyExpense: dailyExpense)
         tableDataSources.append(dataSource)
         newTableView.dataSource = dataSource
+        let dataDelegate = DailyExpenseTableDelegate(daiyExpense: dailyExpense, viewController: self)
+        newTableView.delegate = dataDelegate
+        newTableView.allowsSelection =  true
 
 
 
@@ -311,9 +314,27 @@ class DailyExpenseTableDataSource: NSObject, UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: "CustomHeaderTableViewCell", for: indexPath) as! CustomHeaderTableViewCell
         print("Expense : \(expense) category:\(category)")
         cell.configure(with: expense, category: category)
+        cell.isUserInteractionEnabled = true
+        cell.selectionStyle = .default
         return cell
     }
 }
 
+class DailyExpenseTableDelegate: NSObject, UITableViewDelegate {
+    let daiyExpense: DailyExpense
+    weak var viewController: UIViewController?
+
+    init(daiyExpense: DailyExpense, viewController: UIViewController) {
+        self.daiyExpense = daiyExpense
+        self.viewController = viewController
+    }
+
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        print("1108")
+        let alert = UIAlertController(title: "Item Selected", message: "You selected an item on \(daiyExpense.date)", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+        viewController?.present(alert, animated: true, completion: nil)
+    }
+}
 
 

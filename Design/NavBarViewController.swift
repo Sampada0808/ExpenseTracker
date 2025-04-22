@@ -9,8 +9,12 @@ class NavBarViewController: UIViewController {
     @IBOutlet weak var titleNavBar: UILabel!
     @IBOutlet weak var SpendlyAppLabel: UILabel!
     @IBOutlet var contentView: UIView!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        helpIconImageView.isUserInteractionEnabled = true
+            let tapGesture = UITapGestureRecognizer(target: self, action: #selector(showHelpTips))
+            helpIconImageView.addGestureRecognizer(tapGesture)
     }
     
     override func viewWillLayoutSubviews() {
@@ -32,9 +36,21 @@ class NavBarViewController: UIViewController {
 
     }
     
+    var tipMessage: String = "Tap + button to add a new expense and change the theme using hamburger icon right side of the question mark"
+
+    @objc func showHelpTips() {
+        let alertVC = UIAlertController(title: "Tips", message: tipMessage, preferredStyle: .alert)
+        let okAction = UIAlertAction(title: "Got it!", style: .default, handler: nil)
+        alertVC.addAction(okAction)
+        present(alertVC, animated: true)
+    }
+
+
+    
     func config(){
         let nib  =  NavBarViewController(nibName: "NavBarViewController", bundle: nil)
         addChild(nib)
     }
-
+    
+    
 }
