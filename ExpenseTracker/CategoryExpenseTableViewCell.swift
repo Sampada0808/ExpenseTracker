@@ -54,26 +54,6 @@ class CategoryExpenseTableViewCell: UITableViewCell {
         amountLabel.font = UIFont.style(.secondaryText)
     }
 
-
-    
-//    func configure(with data: CategoryExpenseDataModel) {
-//        categoryIcon.image = data.icon.withRenderingMode(.alwaysTemplate)
-//        categoryIcon.tintColor = data.categoryName.color
-//        backgroundIconView.backgroundColor = data.categoryName.secondaryColor
-//        
-//        categoryName.text = data.categoryName.rawValue
-//        categoryName.textColor = data.categoryName.color
-//        categoryName.font = UIFont.style(.secondaryText)
-//        
-//        amountLabel.text = "$\(String(format: "%.2f", data.amount))"
-//        amountLabel.textColor = data.categoryName.color
-//        amountLabel.font = UIFont.style(.secondaryText)
-//    }
-
-
-    
-    
-
     override func awakeFromNib() {
         super.awakeFromNib()
     }

@@ -14,6 +14,9 @@ class dailyExpenseDataTableViewCell: UITableViewCell {
         super.awakeFromNib()
         // Check if outlets are nil
         contentView.backgroundColor = UIColor.lightGreen
+        contentView.isUserInteractionEnabled = true
+        isUserInteractionEnabled = true
+
         // Initialization code
     }
     
@@ -35,7 +38,6 @@ class dailyExpenseDataTableViewCell: UITableViewCell {
 
     
     func configure(with expense: ExpenseItem, category: Category) {
-        print("Printing\(expense.item)")
         firstLabel.text = expense.item
         secondLabel.text = "\(expense.qty) \(expense.unit)"
         thirdLabel.text = localizedCurrencyString(from: expense.price)

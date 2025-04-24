@@ -1,6 +1,15 @@
 import UIKit
 
+protocol NewExpenseModalViewControllerDelegate: AnyObject {
+    func didUpdateExpense(_ expense: ExpenseItem, category: Category, date: Date)
+}
+
 class NewExpenseModalViewController: UIViewController, NewExpenseModalDelegate {
+    var expenseToEdit: ExpenseItem?
+    var dailyExpenseEntry: [DailyExpense] = []
+    var category: Category?
+    var date: Date? 
+    
     func closeModal() {
         UIView.animate(withDuration: 0.3, animations: {
             self.view.alpha = 0
@@ -30,6 +39,14 @@ class NewExpenseModalViewController: UIViewController, NewExpenseModalDelegate {
         view.backgroundColor = UIColor.black.withAlphaComponent(0.9)
         modalView.delegate =  self
         view.addSubview(modalView)
+        
+        modalView.dailyExpenseEntry = self.dailyExpenseEntry
+        
+        if let expense = expenseToEdit, let category = category, let date = date {
+            modalView.expenseToEdit = expense // Pass expense to edit
+            modalView.setExpenseData(expense: expense, category: category, date: date)
+        }
+
        
     }
     required init?(coder: NSCoder) {

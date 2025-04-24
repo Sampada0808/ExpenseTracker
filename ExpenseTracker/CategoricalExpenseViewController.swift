@@ -1,5 +1,7 @@
 import UIKit
 
+
+
 class CategoricalExpenseViewController: UIViewController {
 
     var navBarView: UIView!
@@ -9,6 +11,9 @@ class CategoricalExpenseViewController: UIViewController {
     var tableHeightConstraint: NSLayoutConstraint?
     var dateToDateExpenses : DailyExpense!
     var tableDataSources: [DailyExpenseTableDataSource] = []
+    var tableDelegates: [DailyExpenseTableDelegate] = []
+    var homeVC: HomeViewController?
+    
 
     
 
@@ -16,6 +21,9 @@ class CategoricalExpenseViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
+        
+        
+        
 
         // Custom navbar
         let navBarVc = NavBarViewController(nibName: "NavBarViewController", bundle: nil)
@@ -54,11 +62,184 @@ class CategoricalExpenseViewController: UIViewController {
            ])
         
         addMultipleTables(in: contentView)
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handleRemovedExpense(_:)),
+            name: NSNotification.Name("com.Spendly.removeExpense"),
+            object: nil
+        )
         
-    
-        
-       
+
+        NotificationCenter.default.addObserver(self, selector: #selector(handleUpdateExpenseNotification(_:)), name: NSNotification.Name("com.Spendly.updateExpense"), object: nil)
     }
+    
+    @objc func handleRemovedExpense(_ notification: Notification) {
+        guard let removedExpense = notification.userInfo?["removedExpense"] as? ExpenseItem else { return }
+
+        // 🔁 Find and update the correct daily entry
+        var updatedDailyExpense: DailyExpense? = nil
+        var dayIndexToRemove: Int? = nil
+
+        for (index, daily) in filteredDailyExpenses.enumerated() {
+            if let itemIndex = daily.item.firstIndex(where: { $0.id == removedExpense.id }) {
+                // Remove the item
+                filteredDailyExpenses[index].item.remove(at: itemIndex)
+
+                // ❗ Remove the entire day if it's now empty
+                if filteredDailyExpenses[index].item.isEmpty {
+                    let removedDay = filteredDailyExpenses.remove(at: index)
+
+                    // Notify homeVC and exit
+                    homeVC?.handleRemovedExpenseExternally(removedDay)
+                } else {
+                    let updatedDay = filteredDailyExpenses[index]
+                    homeVC?.handleRemovedExpenseExternally(updatedDay)
+                }
+
+                break
+            }
+        }
+
+
+        // Now safely remove the empty day
+        if let indexToRemove = dayIndexToRemove {
+            updatedDailyExpense = filteredDailyExpenses.remove(at: indexToRemove)
+        }
+
+        guard let updatedExpense = updatedDailyExpense else { return }
+
+        // Rebuild the table views
+        for (index, dataSource) in tableDataSources.enumerated() {
+            var dailyExpense = dataSource.dailyExpense
+
+            if let itemIndex = dailyExpense.item.firstIndex(where: { $0.id == updatedExpense.item.first?.id }) {
+                // ✅ Assign the correct updated ExpenseItem
+                dailyExpense.item[itemIndex] = updatedExpense.item.first!
+
+                // ✅ Update the data source object
+                tableDataSources[index].dailyExpense = dailyExpense
+
+                // ✅ Reload just this table view
+                if let tableView = self.view.viewWithTag(100 + index) as? UITableView {
+                    tableView.dataSource = tableDataSources[index]
+                    tableView.delegate = tableDelegates[index]
+                    tableView.reloadData()
+                    tableView.setContentOffset(.zero, animated: true)
+                    tableView.layoutIfNeeded()
+
+                    // ✅ Update footer and notify HomeVC
+                    setupFooter(for: tableView, with: dailyExpense)
+                }
+            }
+        }
+
+
+
+        // 🔁 Notify HomeViewController with updated DailyExpense
+        homeVC?.handleRemovedExpenseExternally(updatedExpense)
+    }
+
+
+
+    
+    
+    func updateDailyExpenseInHomeVC(updatedExpense: DailyExpense) {
+            // Ensure homeVC is not nil, then update the expense data
+            homeVC?.updateExpenseInDailyExpenses(updatedExpense: updatedExpense)
+        }
+    
+    @objc func handleUpdateExpenseNotification(_ notification: Notification) {
+        if let userInfo = notification.userInfo, let updatedExpense = userInfo["updatedExpense"] as? ExpenseItem {
+//            // Update filteredDailyExpenses directly (search and replace expense item)
+            for (dayIndex, dailyExpense) in filteredDailyExpenses.enumerated() {
+                if let itemIndex = dailyExpense.item.firstIndex(where: { $0.id == updatedExpense.id }) {
+                    print("before: \(filteredDailyExpenses[dayIndex].item[itemIndex])")
+                    
+                    filteredDailyExpenses[dayIndex].item[itemIndex] = updatedExpense
+                    
+                    print("updated: \(filteredDailyExpenses[dayIndex].item[itemIndex])")
+                    break // Stop looping once found
+                }
+            }
+            
+            for (index, dataSource) in tableDataSources.enumerated() {
+                var dailyExpense = dataSource.dailyExpense
+
+                if let itemIndex = dailyExpense.item.firstIndex(where: { $0.id == updatedExpense.id }) {
+                    // Update the specific ExpenseItem
+                    dailyExpense.item[itemIndex] = updatedExpense
+                    
+                    // Update the data source
+                    tableDataSources[index].dailyExpense = dailyExpense
+
+                    // Reload the corresponding table view
+                    if let tableView = self.view.viewWithTag(100 + index) as? UITableView {
+                        tableView.dataSource = tableDataSources[index]
+                        tableView.delegate = tableDelegates[index] // In case delegates are updated
+                        tableView.reloadData()
+                        tableView.setContentOffset(.zero, animated: true)
+                        tableView.layoutIfNeeded()
+
+                        // ✅ Use updated dailyExpense, not ExpenseItem
+                        setupFooter(for: tableView, with: dailyExpense)
+                        updateDailyExpenseInHomeVC(updatedExpense: dailyExpense)
+                    }
+                }
+            }
+            
+            self.view.setNeedsLayout()
+            //            self.view.layoutIfNeeded()
+            //
+            //            // Post a notification with the updated expense (as an array with a single item)
+            NotificationCenter.default.post(name: NSNotification.Name("DailyExpensesUpdated"), object: nil, userInfo: ["updatedExpenses": filteredDailyExpenses])
+
+
+
+//
+//            // Update the corresponding data source in tableDataSources
+//            if let dataSourceIndex = tableDataSources.firstIndex(where: { $0.dailyExpense.id == updatedExpense.id }) {
+//                // Update the dailyExpense property in the existing data source
+//                print("Before Data Source: \(tableDataSources[dataSourceIndex])")
+//                tableDataSources[dataSourceIndex].dailyExpense = updatedExpense
+//            }
+//            updateDailyExpenseInHomeVC(updatedExpense: updatedExpense)
+//
+//            // Reload each table to reflect the updated data
+//            for (index, dataSource) in tableDataSources.enumerated() {
+//                if let tableView = self.view.viewWithTag(100 + index) as? UITableView {
+//                    // Ensure the table is using the updated data source
+//                    tableView.dataSource = dataSource
+//                    tableView.reloadData()  // Reload the data in the table view
+//                    
+//                    // Scroll to the top to ensure the update is visible
+//                    tableView.setContentOffset(CGPoint(x: 0, y: 0), animated: true)
+//                    
+//                    // Force layout refresh to make sure the updated data is displayed
+//                    tableView.layoutIfNeeded()
+//                    setupFooter(for: tableView, with: updatedExpense)
+//                }
+//            }
+//
+//            // Refresh the layout of the view
+//            self.view.setNeedsLayout()
+//            self.view.layoutIfNeeded()
+//            
+//            // Post a notification with the updated expense (as an array with a single item)
+//            NotificationCenter.default.post(name: NSNotification.Name("DailyExpensesUpdated"), object: nil, userInfo: ["updatedExpenses": [updatedExpense]])
+        }
+    }
+
+
+
+
+
+
+    
+    
+
+
+
+
 
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
@@ -87,6 +268,7 @@ class CategoricalExpenseViewController: UIViewController {
 
         return containerView
     }
+    
 
 
 
@@ -118,39 +300,46 @@ class CategoricalExpenseViewController: UIViewController {
         return dateLabel
     }
 
-    func addTableView(for dailyExpense: DailyExpense, in containerView: UIView, below dateLabel: UILabel) {
+    func addTableView(for dailyExpense: DailyExpense, in containerView: UIView, below dateLabel: UILabel, dailyExpenseEntry: [DailyExpense]) {
         let newTableView = UITableView()
         newTableView.translatesAutoresizingMaskIntoConstraints = false
         newTableView.register(UINib(nibName: "dailyExpenseDataTableViewCell", bundle: nil), forCellReuseIdentifier: "dailyExpenseDataTableViewCell")
         newTableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
         newTableView.backgroundColor = UIColor.lightGreen
+        
         let dataSource = DailyExpenseTableDataSource(dailyExpense: dailyExpense)
-        tableDataSources.append(dataSource)
         newTableView.dataSource = dataSource
-        let dataDelegate = DailyExpenseTableDelegate(daiyExpense: dailyExpense, viewController: self)
+        let dataDelegate = DailyExpenseTableDelegate(dailyExpense: dailyExpense, dailyExpenseEntry: dailyExpenseEntry, viewController: self)
         newTableView.delegate = dataDelegate
-        newTableView.allowsSelection =  true
-
-
+        tableDelegates.append(dataDelegate) // <- This keeps it alive
 
         containerView.addSubview(newTableView)
-        setupFooter(for: newTableView, with: dailyExpense)
+        
         setupTableHeader(for: newTableView)
 
+        // Set the constraints for the table view
         NSLayoutConstraint.activate([
             newTableView.topAnchor.constraint(equalTo: dateLabel.bottomAnchor, constant: 10),
             newTableView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 15),
             newTableView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -15)
         ])
 
+        // Add height constraint initially
         let tableHeightConstraint = newTableView.heightAnchor.constraint(equalToConstant: 100)
         tableHeightConstraint.isActive = true
 
+        // Reload the table view to get the content size
         newTableView.reloadData()
 
+        // Ensure layout pass is complete before adjusting height constraint
         DispatchQueue.main.async {
+            // Update the height based on content size
             tableHeightConstraint.constant = newTableView.contentSize.height
+            containerView.layoutIfNeeded() // Make sure layout is up-to-date
         }
+
+        // Add footer and dashed line below the table view
+        setupFooter(for: newTableView, with: dailyExpense) // Use the current dailyExpense
 
         // Add dashed line below the table
         let lineView = UIView()
@@ -169,11 +358,26 @@ class CategoricalExpenseViewController: UIViewController {
             lineView.setNeedsLayout()
             lineView.layoutIfNeeded()
             lineView.addHorizontalDashedLine()
-            NSLayoutConstraint.activate([
-                containerView.bottomAnchor.constraint(equalTo: lineView.bottomAnchor)
-            ])
 
+            NSLayoutConstraint.activate([
+                containerView.bottomAnchor.constraint(equalTo: lineView.bottomAnchor, constant: 25)
+            ])
         }
+
+
+        // Assign a tag to the table view for later reference
+        newTableView.tag = 100 + tableDataSources.count
+
+        // Append the data source to the list
+        tableDataSources.append(dataSource)
+        
+        // Reload the table after all setup
+        reloadTable(newTableView, with: dailyExpense)
+    }
+
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
     }
 
     
@@ -181,25 +385,55 @@ class CategoricalExpenseViewController: UIViewController {
         var previousContainer: UIView = contentView
 
         if filteredDailyExpenses.isEmpty {
-            print("No filtered expenses found.")
             return
         }
-        
-        let sortedExpenses = filteredDailyExpenses.sorted { $0.date > $1.date }
 
-        for (index, dailyExpense) in sortedExpenses.enumerated() {
-            let spacing: CGFloat = (index == 0) ? 0 : 5
+        // Group expenses by date
+        let groupedByDate = Dictionary(grouping: filteredDailyExpenses) { expense -> Date in
+            return Calendar.current.startOfDay(for: expense.date)
+        }
+
+        // Sort dates descending
+        let sortedDates = groupedByDate.keys.sorted(by: >)
+
+        for (index, date) in sortedDates.enumerated() {
+            let spacing: CGFloat = (index == 0) ? 0 : 0
             let containerView = addContainerView(in: contentView, below: previousContainer, spacing: spacing)
 
-            let dateLabel = addLabel(to: containerView, from: dailyExpense)
-            addTableView(for: dailyExpense, in: containerView, below: dateLabel)
+            // Combine all expenses for the same date into one DailyExpense
+            let dailyEntries = groupedByDate[date] ?? []
+            let combinedItems = dailyEntries.flatMap { $0.item }
+            guard let first = dailyEntries.first else { continue }
+
+            let mergedDailyExpense = DailyExpense(
+                id: first.id, // Use the existing ID from any grouped item (or generate new if needed)
+                date: date,
+                category: first.category,
+                item: combinedItems
+            )
+
+
+            let dateLabel = addLabel(to: containerView, from: mergedDailyExpense)
+
+            addTableView(for: mergedDailyExpense, in: containerView, below: dateLabel, dailyExpenseEntry: dailyEntries)
 
             previousContainer = containerView
         }
 
-        // Anchor last container to bottom of contentView
         previousContainer.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -20).isActive = true
     }
+
+    func reloadTable(_ tableView: UITableView, with updatedExpense: DailyExpense) {
+        tableView.reloadData()
+        
+        DispatchQueue.main.async {
+            if let heightConstraint = tableView.constraints.first(where: { $0.firstAttribute == .height }) {
+                heightConstraint.constant = tableView.contentSize.height
+            }
+            self.setupFooter(for: tableView, with: updatedExpense)
+        }
+    }
+
 
 
 
@@ -262,7 +496,7 @@ class CategoricalExpenseViewController: UIViewController {
         if let footerView = Bundle.main.loadNibNamed("CustomHeaderFooterTableViewCell", owner: self, options: nil)?.first as? CustomHeaderFooterTableViewCell {
             footerView.setNeedsLayout()
             footerView.layoutIfNeeded()
-            footerView.setFooter(with: dailyExpense) // ← Pass as single-day array
+            footerView.setFooter(with: dailyExpense)
 
             let targetSize = CGSize(width: dailyExpenseTable.frame.width, height: UIView.layoutFittingCompressedSize.height)
             let height = footerView.systemLayoutSizeFitting(targetSize).height
@@ -272,6 +506,8 @@ class CategoricalExpenseViewController: UIViewController {
             dailyExpenseTable.tableFooterView = footerView
         }
     }
+    
+    
 
 
 
@@ -298,7 +534,7 @@ extension UIView {
 }
 
 class DailyExpenseTableDataSource: NSObject, UITableViewDataSource {
-    let dailyExpense: DailyExpense
+    var dailyExpense: DailyExpense
 
     init(dailyExpense: DailyExpense) {
         self.dailyExpense = dailyExpense
@@ -320,21 +556,38 @@ class DailyExpenseTableDataSource: NSObject, UITableViewDataSource {
     }
 }
 
+
 class DailyExpenseTableDelegate: NSObject, UITableViewDelegate {
-    let daiyExpense: DailyExpense
+    var dailyExpenseEntry: [DailyExpense]
+    var dailyExpense: DailyExpense
     weak var viewController: UIViewController?
 
-    init(daiyExpense: DailyExpense, viewController: UIViewController) {
-        self.daiyExpense = daiyExpense
+    init(dailyExpense: DailyExpense, dailyExpenseEntry: [DailyExpense], viewController: UIViewController) {
+        self.dailyExpense = dailyExpense
+        self.dailyExpenseEntry = dailyExpenseEntry
         self.viewController = viewController
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        print("1108")
-        let alert = UIAlertController(title: "Item Selected", message: "You selected an item on \(daiyExpense.date)", preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-        viewController?.present(alert, animated: true, completion: nil)
+        let selectedItem = dailyExpense.item[indexPath.row]
+        
+        tableView.deselectRow(at: indexPath, animated: true)
+        
+        // Instantiate the NewExpenseModalViewController
+        let modalVC = NewExpenseModalViewController()
+        
+        // Pass the selected item, category, and date to the modal
+        modalVC.expenseToEdit = selectedItem
+        modalVC.dailyExpenseEntry = dailyExpenseEntry
+        modalVC.category = dailyExpense.category
+        modalVC.date = dailyExpense.date
+        
+        // Present the modal view controller
+        viewController?.present(modalVC, animated: true, completion: nil)
     }
+    
 }
+
+
 
 

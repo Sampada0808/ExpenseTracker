@@ -1,5 +1,7 @@
 import UIKit
 
+
+
 class HomeViewController: UIViewController {
 
     // MARK: - IBOutlets
@@ -7,116 +9,8 @@ class HomeViewController: UIViewController {
     var titleBarView = UIView()
     
     // MARK: - Data Sources
-//    var categoricalExpenses: [CategoryExpenseDataModel] = []
-//    var dailyExpense: [DailyExpense] =  []
-    
-    var categoricalExpenses: [CategoryExpenseDataModel] = [
-            CategoryExpenseDataModel(icon: Category.medicine.image, categoryName: .medicine, amount: 350),
-            CategoryExpenseDataModel(icon: Category.doctor.image, categoryName: .doctor, amount: 800),
-            CategoryExpenseDataModel(icon: Category.groceries.image, categoryName: .groceries, amount: 1200),
-            CategoryExpenseDataModel(icon: Category.snacks.image, categoryName: .snacks, amount: 150),
-            CategoryExpenseDataModel(icon: Category.fruits.image, categoryName: .fruits, amount: 300),
-            CategoryExpenseDataModel(icon: Category.vegetables.image, categoryName: .vegetables, amount: 250),
-            CategoryExpenseDataModel(icon: Category.online.image, categoryName: .online, amount: 600),
-            CategoryExpenseDataModel(icon: Category.miscellaneous.image, categoryName: .miscellaneous, amount: 400)
-        ]
-
-        var dailyExpense: [DailyExpense] = [
-            DailyExpense(
-                date: Date(), // Today
-                category: .medicine,
-                item: [
-                    ExpenseItem(item: "Paracetamol", qty: "2", unit: "Strips", price: 100),
-                    ExpenseItem(item: "Bandage", qty: "1", unit: "Pack", price: 50),
-                    ExpenseItem(item: "Cough Syrup", qty: "1", unit: "Bottle", price: 200)
-                ]
-            ),
-            DailyExpense(
-                date: Calendar.current.date(byAdding: .day, value: 1, to: Date())!,
-                category: .medicine,
-                item: [
-                    ExpenseItem(item: "Migraine", qty: "1", unit: "Strips", price: 100),
-                    ExpenseItem(item: "Bandage", qty: "1", unit: "Pack", price: 50),
-                    ExpenseItem(item: "Cough Syrup", qty: "1", unit: "Bottle", price: 200)
-                ]
-            ),
-            
-            DailyExpense(
-                date: Calendar.current.date(byAdding: .day, value: 2, to: Date())!,
-                category: .medicine,
-                item: [
-                    ExpenseItem(item: "Migraine", qty: "1", unit: "Strips", price: 100),
-                    ExpenseItem(item: "Bandage", qty: "1", unit: "Pack", price: 50),
-                    ExpenseItem(item: "Cough Syrup", qty: "1", unit: "Bottle", price: 200)
-                ]
-            ),
-            DailyExpense(
-                date: Calendar.current.date(byAdding: .day, value: -1, to: Date())!,
-                category: .groceries,
-                item: [
-                    ExpenseItem(item: "Rice", qty: "2", unit: "Kg", price: 180),
-                    ExpenseItem(item: "Pulses", qty: "1", unit: "Kg", price: 120),
-                    ExpenseItem(item: "Oil", qty: "1", unit: "L", price: 150)
-                ]
-            ),
-            DailyExpense(
-                date: Calendar.current.date(byAdding: .day, value: -2, to: Date())!,
-                category: .doctor,
-                item: [
-                    ExpenseItem(item: "Consultation", qty: "1", unit: "Visit", price: 800)
-                ]
-            ),
-            DailyExpense(
-                date: Calendar.current.date(byAdding: .day, value: -3, to: Date())!,
-                category: .snacks,
-                item: [
-                    ExpenseItem(item: "Chips", qty: "3", unit: "Packets", price: 90),
-                    ExpenseItem(item: "Cookies", qty: "1", unit: "Box", price: 60)
-                ]
-            ),
-            DailyExpense(
-                date: Calendar.current.date(byAdding: .day, value: -4, to: Date())!,
-                category: .fruits,
-                item: [
-                    ExpenseItem(item: "Apples", qty: "1", unit: "Kg", price: 150),
-                    ExpenseItem(item: "Bananas", qty: "1", unit: "Dozen", price: 100),
-                    ExpenseItem(item: "Oranges", qty: "1", unit: "Kg", price: 50)
-                ]
-            ),
-            DailyExpense(
-                date: Calendar.current.date(byAdding: .day, value: -5, to: Date())!,
-                category: .vegetables,
-                item: [
-                    ExpenseItem(item: "Tomatoes", qty: "1", unit: "Kg", price: 40),
-                    ExpenseItem(item: "Onions", qty: "1", unit: "Kg", price: 30),
-                    ExpenseItem(item: "Spinach", qty: "1", unit: "Bunch", price: 20),
-                    ExpenseItem(item: "Cauliflower", qty: "1", unit: "Piece", price: 60),
-                    ExpenseItem(item: "Potatoes", qty: "2", unit: "Kg", price: 100)
-                ]
-            ),
-            DailyExpense(
-                date: Calendar.current.date(byAdding: .day, value: -6, to: Date())!,
-                category: .online,
-                item: [
-                    ExpenseItem(item: "Phone Cover", qty: "1", unit: "Piece", price: 250),
-                    ExpenseItem(item: "Notebook", qty: "2", unit: "Packs", price: 150),
-                    ExpenseItem(item: "Stationery", qty: "1", unit: "Set", price: 200)
-                ]
-            ),
-            DailyExpense(
-                date: Calendar.current.date(byAdding: .day, value: -7, to: Date())!,
-                category: .miscellaneous,
-                item: [
-                    ExpenseItem(item: "Gift Wrap", qty: "2", unit: "Rolls", price: 100),
-                    ExpenseItem(item: "Sticky Notes", qty: "3", unit: "Pads", price: 150),
-                    ExpenseItem(item: "Batteries", qty: "2", unit: "Pairs", price: 150)
-                ]
-            )
-        ]
-
-    
-
-
+    var categoricalExpenses: [CategoryExpenseDataModel] = []
+    var dailyExpense: [DailyExpense] =  []
 
         
     
@@ -197,7 +91,7 @@ class HomeViewController: UIViewController {
         self.titleBarView = navBarVC.view
 
 
-        
+        NotificationCenter.default.addObserver(self, selector: #selector(handleUpdatedExpenses(_:)), name: NSNotification.Name("DailyExpensesUpdated"), object: nil)
         // Observer for new expense added
         NotificationCenter.default.addObserver(self, selector: #selector(handleExpense), name: NSNotification.Name("com.Spendly.addExpense"), object: nil)
 
@@ -217,6 +111,50 @@ class HomeViewController: UIViewController {
         categoryTableView.separatorStyle = .none
 
     }
+    @objc func handleUpdatedExpenses(_ notification: Notification) {
+        if let updatedExpenses = notification.userInfo?["updatedExpenses"] as? [DailyExpense] {
+            // Do not modify the `id`, just update other fields
+            print("1198:\(dailyExpense)")
+            self.dailyExpense = updatedExpenses
+            
+            // Recalculate the category data
+            categoricalExpenses = generateCategoryDataModels(from: dailyExpense)
+            
+            // Reload the table view and update the UI
+            categoryTableView.reloadData()
+            addAllLabels()
+            updateTotalExpenseLabel()
+        }
+    }
+    
+    func updateExpenseInDailyExpenses(updatedExpense: DailyExpense) {
+           // Update the array with the updated expense
+           if let index = dailyExpense.firstIndex(where: { $0.id == updatedExpense.id }) {
+               dailyExpense[index] = updatedExpense
+           }
+           
+       }
+    
+    func handleRemovedExpenseExternally(_ updatedExpense: DailyExpense) {
+        if let index = dailyExpense.firstIndex(where: {
+            $0.date == updatedExpense.date && $0.category == updatedExpense.category
+        }) {
+            if updatedExpense.item.isEmpty {
+                dailyExpense.remove(at: index)
+            } else {
+                dailyExpense[index] = updatedExpense
+            }
+        }
+
+        categoricalExpenses = generateCategoryDataModels(from: dailyExpense)
+        categoryTableView.reloadData()
+        addAllLabels()
+        updateTotalExpenseLabel()
+    }
+
+
+
+
     
     override func viewSafeAreaInsetsDidChange() {
         super.viewSafeAreaInsetsDidChange()
@@ -270,17 +208,26 @@ class HomeViewController: UIViewController {
     
     @objc func handleExpense(_ notification: Notification) {
         if let dailyExpenses = notification.userInfo?["newExpense"] as? DailyExpense {
-            dailyExpense.append(dailyExpenses)
+            // Only set the `id` if it's a new expense
+            let newExpense = dailyExpenses
+            
+            
+            // Append the new expense to the dailyExpense list
+            dailyExpense.append(newExpense)
 
             // Recalculate summary
             categoricalExpenses = generateCategoryDataModels(from: dailyExpense)
-            
+
             // Update UI
             categoryTableView.reloadData()
             addAllLabels()
             updateTotalExpenseLabel()
         }
     }
+
+
+
+
 
     
     // MARK: - Helpers
@@ -447,3 +394,5 @@ extension HomeViewController: UITableViewDataSource {
 class CategoryTapGestureRecognizer: UITapGestureRecognizer {
     var indexPath: IndexPath?
 }
+
+
