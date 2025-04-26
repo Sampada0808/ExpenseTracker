@@ -2,7 +2,11 @@ import UIKit
 
 
 
-class HomeViewController: UIViewController {
+class HomeViewController: UIViewController, NavBarViewControllerDelegate {
+    func didTapSettings() {
+        performSegue(withIdentifier: "SettingsSegue", sender: nil)
+    }
+    
 
     // MARK: - IBOutlets
     @IBOutlet weak var categoryTableView: UITableView!
@@ -88,6 +92,8 @@ class HomeViewController: UIViewController {
         view.addSubview(navBarVC.view)
         navBarVC.view.pinToTop(of: view)
         navBarVC.didMove(toParent: self)
+        navBarVC.delegate = self
+
         self.titleBarView = navBarVC.view
 
 

@@ -1,5 +1,9 @@
 import UIKit
 
+protocol NavBarViewControllerDelegate: AnyObject {
+    func didTapSettings()
+}
+
 class NavBarViewController: UIViewController {
     
     
@@ -10,11 +14,18 @@ class NavBarViewController: UIViewController {
     @IBOutlet weak var SpendlyAppLabel: UILabel!
     @IBOutlet var contentView: UIView!
     
+    weak var delegate: NavBarViewControllerDelegate?
+
+
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         helpIconImageView.isUserInteractionEnabled = true
             let tapGesture = UITapGestureRecognizer(target: self, action: #selector(showHelpTips))
             helpIconImageView.addGestureRecognizer(tapGesture)
+        settingsMenu.isUserInteractionEnabled = true
+            let tapSettingsGesture = UITapGestureRecognizer(target: self, action: #selector(showSettingModal))
+        settingsMenu.addGestureRecognizer(tapSettingsGesture)
     }
     
     override func viewWillLayoutSubviews() {
@@ -44,6 +55,11 @@ class NavBarViewController: UIViewController {
         alertVC.addAction(okAction)
         present(alertVC, animated: true)
     }
+    
+    @objc func showSettingModal() {
+        delegate?.didTapSettings()
+    }
+
 
 
     

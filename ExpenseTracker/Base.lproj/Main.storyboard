@@ -109,15 +109,103 @@
                     </view>
                     <connections>
                         <outlet property="categoryTableView" destination="9wB-fR-QyO" id="vqa-bn-C6X"/>
+                        <segue destination="OIf-Xp-0kU" kind="presentation" identifier="SettingsSegue" modalPresentationStyle="overCurrentContext" id="ELd-Fk-Fun"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="131.25" y="2.112676056338028"/>
         </scene>
+        <!--Settings View Controller-->
+        <scene sceneID="Bt1-av-6QB">
+            <objects>
+                <viewController id="OIf-Xp-0kU" customClass="SettingsViewController" customModule="ExpenseTracker" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="KWH-iC-cKW">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="nnc-Kx-6kX">
+                                <rect key="frame" x="15" y="194" width="290" height="180"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Settings" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="D5N-eN-DeE">
+                                        <rect key="frame" x="15" y="15" width="63" height="20"/>
+                                        <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="17"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="App Theme" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="WCP-Fq-HzG">
+                                        <rect key="frame" x="15" y="60" width="74.5" height="17"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="XV4-Jx-K91">
+                                        <rect key="frame" x="15" y="87" width="260" height="32"/>
+                                        <segments>
+                                            <segment title="" image="sun.min.fill" catalog="system"/>
+                                            <segment title="" image="moon" catalog="system"/>
+                                            <segment title="" image="iphone.gen1" catalog="system"/>
+                                        </segments>
+                                        <connections>
+                                            <action selector="segmentedControlValueChange:" destination="OIf-Xp-0kU" eventType="valueChanged" id="KdP-Uq-kdR"/>
+                                        </connections>
+                                    </segmentedControl>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xDS-d2-Gf7">
+                                        <rect key="frame" x="230" y="15" width="45" height="35"/>
+                                        <color key="tintColor" name="LittleDarkGreen"/>
+                                        <state key="normal" title="Button"/>
+                                        <buttonConfiguration key="configuration" style="plain" image="CrossMark"/>
+                                        <connections>
+                                            <action selector="dismissBtnTapped:" destination="OIf-Xp-0kU" eventType="touchUpInside" id="cAk-Yd-hcB"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                                <color key="backgroundColor" name="LightGreen"/>
+                                <constraints>
+                                    <constraint firstItem="XV4-Jx-K91" firstAttribute="leading" secondItem="nnc-Kx-6kX" secondAttribute="leading" constant="15" id="C7Y-xG-lss"/>
+                                    <constraint firstItem="D5N-eN-DeE" firstAttribute="top" secondItem="nnc-Kx-6kX" secondAttribute="top" constant="15" id="I8g-bD-xeT"/>
+                                    <constraint firstAttribute="height" constant="180" id="NK6-DT-gbw"/>
+                                    <constraint firstItem="WCP-Fq-HzG" firstAttribute="leading" secondItem="nnc-Kx-6kX" secondAttribute="leading" constant="15" id="OBu-jf-6ca"/>
+                                    <constraint firstItem="WCP-Fq-HzG" firstAttribute="top" secondItem="D5N-eN-DeE" secondAttribute="bottom" constant="25" id="RpQ-yO-tBA"/>
+                                    <constraint firstAttribute="trailing" secondItem="xDS-d2-Gf7" secondAttribute="trailing" constant="15" id="TVT-Ar-73T"/>
+                                    <constraint firstItem="xDS-d2-Gf7" firstAttribute="top" secondItem="nnc-Kx-6kX" secondAttribute="top" constant="15" id="cBT-GC-lCJ"/>
+                                    <constraint firstItem="D5N-eN-DeE" firstAttribute="leading" secondItem="nnc-Kx-6kX" secondAttribute="leading" constant="15" id="jj2-07-k6k"/>
+                                    <constraint firstAttribute="trailing" secondItem="XV4-Jx-K91" secondAttribute="trailing" constant="15" id="qtD-C0-FLe"/>
+                                    <constraint firstItem="XV4-Jx-K91" firstAttribute="top" secondItem="WCP-Fq-HzG" secondAttribute="bottom" constant="10" id="xM2-AQ-lpW"/>
+                                </constraints>
+                            </view>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="hdY-75-j6f"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.8982305463576159" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="nnc-Kx-6kX" firstAttribute="centerY" secondItem="KWH-iC-cKW" secondAttribute="centerY" id="Vqc-rV-Iau"/>
+                            <constraint firstItem="nnc-Kx-6kX" firstAttribute="leading" secondItem="hdY-75-j6f" secondAttribute="leading" constant="15" id="X5n-ZK-uNv"/>
+                            <constraint firstItem="hdY-75-j6f" firstAttribute="trailing" secondItem="nnc-Kx-6kX" secondAttribute="trailing" constant="15" id="yUo-aO-bbK"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="appThemeLabel" destination="WCP-Fq-HzG" id="lby-uH-ETg"/>
+                        <outlet property="modalView" destination="nnc-Kx-6kX" id="b6V-fD-afi"/>
+                        <outlet property="settingsLabel" destination="D5N-eN-DeE" id="cWc-v3-i6W"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="uHt-cs-C25" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="948.75" y="1.056338028169014"/>
+        </scene>
     </scenes>
     <resources>
+        <image name="CrossMark" width="21" height="21"/>
         <image name="Medicine" width="234" height="277"/>
+        <image name="iphone.gen1" catalog="system" width="112" height="128"/>
+        <image name="moon" catalog="system" width="128" height="123"/>
+        <image name="sun.min.fill" catalog="system" width="128" height="123"/>
+        <namedColor name="LightGreen">
+            <color red="0.90196079015731812" green="0.93333333730697632" blue="0.91372549533843994" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <namedColor name="LittleDarkGreen">
+            <color red="0.22745099663734436" green="0.35294118523597717" blue="0.25098040699958801" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
         <namedColor name="Medicine">
             <color red="0.97647058963775635" green="0.364705890417099" blue="0.41568624973297119" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
