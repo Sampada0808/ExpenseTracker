@@ -1,7 +1,7 @@
 import UIKit
 
 protocol NewExpenseModalViewControllerDelegate: AnyObject {
-    func didUpdateExpense(_ expense: ExpenseItem, category: Category, date: Date)
+    func showNonEditableAlert()
 }
 
 class NewExpenseModalViewController: UIViewController, NewExpenseModalDelegate {
@@ -38,6 +38,7 @@ class NewExpenseModalViewController: UIViewController, NewExpenseModalDelegate {
         super.viewDidLoad()
         view.backgroundColor = UIColor.black.withAlphaComponent(0.9)
         modalView.delegate =  self
+        modalView.editableDelegate = self
         view.addSubview(modalView)
         
         modalView.dailyExpenseEntry = self.dailyExpenseEntry
@@ -55,3 +56,12 @@ class NewExpenseModalViewController: UIViewController, NewExpenseModalDelegate {
     
 
 }
+
+extension NewExpenseModalViewController: NewExpenseModalViewControllerDelegate {
+    func showNonEditableAlert() {
+        let alert = UIAlertController(title: "Action Not Allowed", message: "Category and Date cannot be edited.", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+        self.present(alert, animated: true, completion: nil)
+    }
+}
+

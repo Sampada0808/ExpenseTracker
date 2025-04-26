@@ -10,6 +10,8 @@ class NewExpenseModalView: UIView {
     var dailyExpenseEntry : [DailyExpense] = []
     weak var delegate : NewExpenseModalDelegate?
     var expenseToEdit: ExpenseItem?
+    weak var editableDelegate : NewExpenseModalViewControllerDelegate?
+    
 
     
     
@@ -97,6 +99,7 @@ class NewExpenseModalView: UIView {
         qtyPicker.dataSource = self
         unitPicker.delegate = self
         unitPicker.dataSource = self
+        
 
         qtyTextField.inputView = qtyPicker
         unitTextField.inputView = unitPicker
@@ -196,76 +199,50 @@ class NewExpenseModalView: UIView {
               !item.isEmpty, !qty.isEmpty, !unit.isEmpty, !price.isEmpty, !dateStr.isEmpty else {
             return
         }
+        
+        
 
         let date = Calendar.current.startOfDay(for: parsedDate)
         let selectedRow = categoryPickerView.selectedRow(inComponent: 0)
         let category = Category.allCases[selectedRow]
         let calendar = Calendar.current
+        
+        if let expenseToEdit = expenseToEdit,
+              let originalDayIndex = dailyExpenseEntry.firstIndex(where: {
+                   $0.item.contains(where: { $0.id == expenseToEdit.id })
+              }) {
+               
+               let originalDailyExpense = dailyExpenseEntry[originalDayIndex]
+               let newNormalizedDate = calendar.startOfDay(for: parsedDate)
+
+               if originalDailyExpense.category != category ||
+                   !calendar.isDate(originalDailyExpense.date, equalTo: newNormalizedDate, toGranularity: .day) {
+
+                   editableDelegate?.showNonEditableAlert() // ✅ CALL DELEGATE
+                   return
+               }
+           }
 
         if let expenseToEdit = expenseToEdit {
-            // Find the existing expense to edit
             if let originalDayIndex = dailyExpenseEntry.firstIndex(where: {
                 $0.item.contains(where: { $0.id == expenseToEdit.id })
             }) {
                 var originalDailyExpense = dailyExpenseEntry[originalDayIndex]
 
-                // Find the specific item to edit
                 if let itemIndex = originalDailyExpense.item.firstIndex(where: { $0.id == expenseToEdit.id }) {
-                    let newNormalizedDate = calendar.startOfDay(for: date)
+                    // ✅ Safe to update only other fields
+                    originalDailyExpense.item[itemIndex].item = item
+                    originalDailyExpense.item[itemIndex].qty = qty
+                    originalDailyExpense.item[itemIndex].unit = unit
+                    originalDailyExpense.item[itemIndex].price = Double(price) ?? 0.0
 
-                    if originalDailyExpense.category == category &&
-                        calendar.isDate(originalDailyExpense.date, equalTo: newNormalizedDate, toGranularity: .day) {
+                    dailyExpenseEntry[originalDayIndex] = originalDailyExpense
 
-                        // Update only the modified fields of the existing expense item
-                        originalDailyExpense.item[itemIndex].item = item
-                        originalDailyExpense.item[itemIndex].qty = qty
-                        originalDailyExpense.item[itemIndex].unit = unit
-                        originalDailyExpense.item[itemIndex].price = Double(price) ?? 0.0
-                        
-                        // Update the dailyExpenseEntry
-                        dailyExpenseEntry[originalDayIndex] = originalDailyExpense
-                        print("1108:\(originalDailyExpense)")
-
-                        // Notify listeners that the expense was updated
-                        NotificationCenter.default.post(name: NSNotification.Name("com.Spendly.updateExpense"), object: nil, userInfo: ["updatedExpense": originalDailyExpense.item[itemIndex]])
-                    } else {
-                        // 1. Remove item from the original DailyExpense
-                        let removedItem = originalDailyExpense.item.remove(at: itemIndex)
-
-                        // 2. If that day becomes empty, remove the day itself
-                        if originalDailyExpense.item.isEmpty {
-                            dailyExpenseEntry.remove(at: originalDayIndex)
-                        } else {
-                            dailyExpenseEntry[originalDayIndex] = originalDailyExpense
-                        }
-
-                        // 3. Notify that the item was removed
-                        NotificationCenter.default.post(name: NSNotification.Name("com.Spendly.removeExpense"), object: nil, userInfo: ["removedExpense": removedItem])
-
-                        // 4. Try to add it to the new category/date
-//                        if let newDayIndex = dailyExpenseEntry.firstIndex(where: {
-//                            $0.category == category &&
-//                            calendar.isDate($0.date, equalTo: newNormalizedDate, toGranularity: .day)
-//                        }) {
-//                            dailyExpenseEntry[newDayIndex].item.append(removedItem)
-//
-//                            // Notify about the updated day
-//                            let updated = dailyExpenseEntry[newDayIndex]
-//                            NotificationCenter.default.post(name: NSNotification.Name("com.Spendly.updateExpense"), object: nil, userInfo: ["updatedExpense": updated])
-//                        } else {
-//                            let newDailyExpense = DailyExpense(id: UUID(), date: newNormalizedDate, category: category, item: [removedItem])
-//                            dailyExpenseEntry.append(newDailyExpense)
-//
-//                            // Notify that a new day was added
-//                            NotificationCenter.default.post(name: NSNotification.Name("com.Spendly.addExpense"), object: nil, userInfo: ["newExpense": newDailyExpense])
-//                        }
-
-
-                    }
+                    NotificationCenter.default.post(name: NSNotification.Name("com.Spendly.updateExpense"), object: nil, userInfo: ["updatedExpense": originalDailyExpense.item[itemIndex]])
                 }
             }
         } else {
-            // Handle adding a new expense if no existing expense to edit
+            // Code for adding new expense (you can keep it same)
             let expense = ExpenseItem(id: UUID(), item: item, qty: qty, unit: unit, price: Double(price)!)
             let normalizedDate = calendar.startOfDay(for: date)
 
@@ -274,7 +251,6 @@ class NewExpenseModalView: UIView {
             }) {
                 dailyExpenseEntry[index].item.append(expense)
 
-                // Preserve the ID and update the list
                 let updatedExpense = DailyExpense(
                     id: dailyExpenseEntry[index].id,
                     date: normalizedDate,
@@ -283,24 +259,23 @@ class NewExpenseModalView: UIView {
                 )
                 dailyExpenseEntry[index] = updatedExpense
 
-                let userInfo: [String: DailyExpense] = ["updatedExpense": updatedExpense]
-                NotificationCenter.default.post(name: NSNotification.Name("com.Spendly.updateExpense"), object: nil, userInfo: userInfo)
+                NotificationCenter.default.post(name: NSNotification.Name("com.Spendly.updateExpense"), object: nil, userInfo: ["updatedExpense": updatedExpense])
             } else {
                 let dailyExpense = DailyExpense(
-                    id: UUID(),  // New unique ID for new expense
+                    id: UUID(),
                     date: normalizedDate,
                     category: category,
                     item: [expense]
                 )
                 dailyExpenseEntry.append(dailyExpense)
 
-                let userInfo: [String: DailyExpense] = ["newExpense": dailyExpense]
-                NotificationCenter.default.post(name: NSNotification.Name("com.Spendly.addExpense"), object: nil, userInfo: userInfo)
+                NotificationCenter.default.post(name: NSNotification.Name("com.Spendly.addExpense"), object: nil, userInfo: ["newExpense": dailyExpense])
             }
         }
 
         delegate?.closeModal()
     }
+
 
 
 

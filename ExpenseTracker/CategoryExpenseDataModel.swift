@@ -2,13 +2,12 @@ import Foundation
 import UIKit
 
 struct ExpenseItem: Identifiable {
-    let id: UUID  // Unique identifier for each expense item
+    let id: UUID
     var item: String
     var qty: String
     var unit: String
     var price: Double
     
-    // Init to auto-generate UUID
     init(id: UUID = UUID(), item: String, qty: String, unit: String, price: Double) {
         self.id = id
         self.item = item
@@ -20,12 +19,11 @@ struct ExpenseItem: Identifiable {
 
 
 struct DailyExpense: Identifiable {
-    let id: UUID  // ✅ Unique identifier
+    let id: UUID
     var date: Date
     var category: Category
     var item: [ExpenseItem]
     
-    // Init to auto-generate UUID
     init(id: UUID = UUID(), date: Date, category: Category, item: [ExpenseItem]) {
         self.id = id
         self.date = date

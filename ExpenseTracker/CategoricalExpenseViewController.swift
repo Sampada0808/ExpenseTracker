@@ -73,71 +73,75 @@ class CategoricalExpenseViewController: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(handleUpdateExpenseNotification(_:)), name: NSNotification.Name("com.Spendly.updateExpense"), object: nil)
     }
     
+    
+    
     @objc func handleRemovedExpense(_ notification: Notification) {
         guard let removedExpense = notification.userInfo?["removedExpense"] as? ExpenseItem else { return }
-
-        // 🔁 Find and update the correct daily entry
-        var updatedDailyExpense: DailyExpense? = nil
-        var dayIndexToRemove: Int? = nil
-
-        for (index, daily) in filteredDailyExpenses.enumerated() {
-            if let itemIndex = daily.item.firstIndex(where: { $0.id == removedExpense.id }) {
-                // Remove the item
-                filteredDailyExpenses[index].item.remove(at: itemIndex)
-
-                // ❗ Remove the entire day if it's now empty
-                if filteredDailyExpenses[index].item.isEmpty {
-                    let removedDay = filteredDailyExpenses.remove(at: index)
-
-                    // Notify homeVC and exit
-                    homeVC?.handleRemovedExpenseExternally(removedDay)
-                } else {
-                    let updatedDay = filteredDailyExpenses[index]
-                    homeVC?.handleRemovedExpenseExternally(updatedDay)
-                }
-
+        // 1. Remove the expense from filteredDailyExpenses
+        for (dateIndex, dailyExpense) in filteredDailyExpenses.enumerated() {
+            if let itemIndex = dailyExpense.item.firstIndex(where: { $0.id == removedExpense.id }) {
+                filteredDailyExpenses[dateIndex].item.remove(at: itemIndex)
+                print("Item removed from filteredDailyExpenses")
                 break
             }
         }
+        
+        // 2. Remove any empty dailyExpense
+        filteredDailyExpenses.removeAll { $0.item.isEmpty }
+        
+        // 3. ✅ Check if no data left -> pop back
+           if filteredDailyExpenses.isEmpty {
+               navigationController?.popViewController(animated: true)
+               NotificationCenter.default.post(
+                   name: NSNotification.Name("deleteExpense"),
+                   object: nil,
+                   userInfo: [
+                       "updatedExpenses": filteredDailyExpenses,
+                       "categoryRawValue": selectedCategory?.rawValue ?? ""
+                   ]
+               )
 
-
-        // Now safely remove the empty day
-        if let indexToRemove = dayIndexToRemove {
-            updatedDailyExpense = filteredDailyExpenses.remove(at: indexToRemove)
-        }
-
-        guard let updatedExpense = updatedDailyExpense else { return }
-
-        // Rebuild the table views
+               return // Exit early, no need to update tables
+           }
+        
+        // 3. Update tableDataSources
         for (index, dataSource) in tableDataSources.enumerated() {
             var dailyExpense = dataSource.dailyExpense
-
-            if let itemIndex = dailyExpense.item.firstIndex(where: { $0.id == updatedExpense.item.first?.id }) {
-                // ✅ Assign the correct updated ExpenseItem
-                dailyExpense.item[itemIndex] = updatedExpense.item.first!
-
-                // ✅ Update the data source object
+            
+            if let itemIndex = dailyExpense.item.firstIndex(where: { $0.id == removedExpense.id }) {
+                dailyExpense.item.remove(at: itemIndex)
                 tableDataSources[index].dailyExpense = dailyExpense
-
-                // ✅ Reload just this table view
+                
                 if let tableView = self.view.viewWithTag(100 + index) as? UITableView {
                     tableView.dataSource = tableDataSources[index]
                     tableView.delegate = tableDelegates[index]
                     tableView.reloadData()
                     tableView.setContentOffset(.zero, animated: true)
                     tableView.layoutIfNeeded()
-
-                    // ✅ Update footer and notify HomeVC
+                    // 🔥 Adjust the height constraint
+                    if let heightConstraint = tableView.constraints.first(where: { $0.firstAttribute == .height }) {
+                        heightConstraint.constant = tableView.contentSize.height
+                    } else {
+                        // If there is no height constraint yet, you can add one
+                        let heightConstraint = tableView.heightAnchor.constraint(equalToConstant: tableView.contentSize.height)
+                        heightConstraint.isActive = true
+                    }
+                    
                     setupFooter(for: tableView, with: dailyExpense)
+                    updateDailyExpenseInHomeVC(updatedExpense: dailyExpense)
                 }
+                NotificationCenter.default.post(
+                    name: NSNotification.Name("deleteExpense"),
+                    object: nil,
+                    userInfo: [
+                        "updatedExpenses": filteredDailyExpenses,
+                        "categoryRawValue": selectedCategory?.rawValue ?? ""
+                    ]
+                )
             }
         }
-
-
-
-        // 🔁 Notify HomeViewController with updated DailyExpense
-        homeVC?.handleRemovedExpenseExternally(updatedExpense)
     }
+
 
 
 
@@ -153,11 +157,7 @@ class CategoricalExpenseViewController: UIViewController {
 //            // Update filteredDailyExpenses directly (search and replace expense item)
             for (dayIndex, dailyExpense) in filteredDailyExpenses.enumerated() {
                 if let itemIndex = dailyExpense.item.firstIndex(where: { $0.id == updatedExpense.id }) {
-                    print("before: \(filteredDailyExpenses[dayIndex].item[itemIndex])")
-                    
                     filteredDailyExpenses[dayIndex].item[itemIndex] = updatedExpense
-                    
-                    print("updated: \(filteredDailyExpenses[dayIndex].item[itemIndex])")
                     break // Stop looping once found
                 }
             }
@@ -188,44 +188,7 @@ class CategoricalExpenseViewController: UIViewController {
             }
             
             self.view.setNeedsLayout()
-            //            self.view.layoutIfNeeded()
-            //
-            //            // Post a notification with the updated expense (as an array with a single item)
             NotificationCenter.default.post(name: NSNotification.Name("DailyExpensesUpdated"), object: nil, userInfo: ["updatedExpenses": filteredDailyExpenses])
-
-
-
-//
-//            // Update the corresponding data source in tableDataSources
-//            if let dataSourceIndex = tableDataSources.firstIndex(where: { $0.dailyExpense.id == updatedExpense.id }) {
-//                // Update the dailyExpense property in the existing data source
-//                print("Before Data Source: \(tableDataSources[dataSourceIndex])")
-//                tableDataSources[dataSourceIndex].dailyExpense = updatedExpense
-//            }
-//            updateDailyExpenseInHomeVC(updatedExpense: updatedExpense)
-//
-//            // Reload each table to reflect the updated data
-//            for (index, dataSource) in tableDataSources.enumerated() {
-//                if let tableView = self.view.viewWithTag(100 + index) as? UITableView {
-//                    // Ensure the table is using the updated data source
-//                    tableView.dataSource = dataSource
-//                    tableView.reloadData()  // Reload the data in the table view
-//                    
-//                    // Scroll to the top to ensure the update is visible
-//                    tableView.setContentOffset(CGPoint(x: 0, y: 0), animated: true)
-//                    
-//                    // Force layout refresh to make sure the updated data is displayed
-//                    tableView.layoutIfNeeded()
-//                    setupFooter(for: tableView, with: updatedExpense)
-//                }
-//            }
-//
-//            // Refresh the layout of the view
-//            self.view.setNeedsLayout()
-//            self.view.layoutIfNeeded()
-//            
-//            // Post a notification with the updated expense (as an array with a single item)
-//            NotificationCenter.default.post(name: NSNotification.Name("DailyExpensesUpdated"), object: nil, userInfo: ["updatedExpenses": [updatedExpense]])
         }
     }
 
@@ -435,13 +398,6 @@ class CategoricalExpenseViewController: UIViewController {
     }
 
 
-
-
-
-
-
-
-
     func addBackButton() {
         backButton.setTitle("< Back", for: .normal)
         backButton.titleLabel?.font = UIFont.style(.h3)
@@ -506,12 +462,6 @@ class CategoricalExpenseViewController: UIViewController {
             dailyExpenseTable.tableFooterView = footerView
         }
     }
-    
-    
-
-
-
-
 
 
 }
@@ -548,7 +498,6 @@ class DailyExpenseTableDataSource: NSObject, UITableViewDataSource {
         let expense = dailyExpense.item[indexPath.row]
         let category = dailyExpense.category
         let cell = tableView.dequeueReusableCell(withIdentifier: "dailyExpenseDataTableViewCell", for: indexPath) as! dailyExpenseDataTableViewCell
-        print("Expense : \(expense) category:\(category)")
         cell.configure(with: expense, category: category)
         cell.isUserInteractionEnabled = true
         cell.selectionStyle = .default
@@ -585,6 +534,30 @@ class DailyExpenseTableDelegate: NSObject, UITableViewDelegate {
         // Present the modal view controller
         viewController?.present(modalVC, animated: true, completion: nil)
     }
+    
+    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+           let delete = UIContextualAction(style: .destructive, title: "Delete") { [weak self] (action, view, completionHandler) in
+               guard let self = self else {
+                   completionHandler(false)
+                   return
+               }
+               
+               let itemToDelete = self.dailyExpense.item[indexPath.row]
+               
+               // Post notification to remove the item
+               NotificationCenter.default.post(
+                   name: NSNotification.Name("com.Spendly.removeExpense"),
+                   object: nil,
+                   userInfo: ["removedExpense": itemToDelete, "TableView": tableView]
+               )
+               
+               completionHandler(true)
+           }
+           
+           let swipeConfig = UISwipeActionsConfiguration(actions: [delete])
+           swipeConfig.performsFirstActionWithFullSwipe = false
+           return swipeConfig
+       }
     
 }
 

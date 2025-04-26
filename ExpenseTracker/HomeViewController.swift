@@ -94,6 +94,7 @@ class HomeViewController: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(handleUpdatedExpenses(_:)), name: NSNotification.Name("DailyExpensesUpdated"), object: nil)
         // Observer for new expense added
         NotificationCenter.default.addObserver(self, selector: #selector(handleExpense), name: NSNotification.Name("com.Spendly.addExpense"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(handleRemovedExpenseExternally), name: NSNotification.Name("deleteExpense"), object: nil)
 
         // Setup views
         view.addSubview(currentWeekLabel)
@@ -114,7 +115,6 @@ class HomeViewController: UIViewController {
     @objc func handleUpdatedExpenses(_ notification: Notification) {
         if let updatedExpenses = notification.userInfo?["updatedExpenses"] as? [DailyExpense] {
             // Do not modify the `id`, just update other fields
-            print("1198:\(dailyExpense)")
             self.dailyExpense = updatedExpenses
             
             // Recalculate the category data
@@ -135,26 +135,41 @@ class HomeViewController: UIViewController {
            
        }
     
-    func handleRemovedExpenseExternally(_ updatedExpense: DailyExpense) {
-        if let index = dailyExpense.firstIndex(where: {
-            $0.date == updatedExpense.date && $0.category == updatedExpense.category
-        }) {
-            if updatedExpense.item.isEmpty {
-                dailyExpense.remove(at: index)
-            } else {
-                dailyExpense[index] = updatedExpense
-            }
+    @objc func handleRemovedExpenseExternally(_ notification: Notification) {
+        guard let categoryRawValue = notification.userInfo?["categoryRawValue"] as? String,
+              let selectedCategory = Category(rawValue: categoryRawValue) else {
+            return
+        }
+        
+        let updatedExpenses = notification.userInfo?["updatedExpenses"] as? [DailyExpense] ?? []
+        
+
+        if updatedExpenses.isEmpty {
+            dailyExpense.removeAll { $0.category == selectedCategory }
+        } else {
+            for (index, var expense) in dailyExpense.enumerated() {
+                   // For each item in the current expense's item list
+                   expense.item = expense.item.filter { item in
+                       // Check if the item is present in the updatedExpenses
+                       return updatedExpenses.contains { updatedExpense in
+                           updatedExpense.item.contains { $0.id == item.id }
+                       }
+                   }
+                   
+                   // Optionally, if after filtering, an expense has no items left, you may want to remove the expense
+                   if expense.item.isEmpty {
+                       dailyExpense.remove(at: index)
+                   }
+               }
+
         }
 
+        // Refresh UI
         categoricalExpenses = generateCategoryDataModels(from: dailyExpense)
         categoryTableView.reloadData()
         addAllLabels()
         updateTotalExpenseLabel()
     }
-
-
-
-
     
     override func viewSafeAreaInsetsDidChange() {
         super.viewSafeAreaInsetsDidChange()
@@ -224,10 +239,6 @@ class HomeViewController: UIViewController {
             updateTotalExpenseLabel()
         }
     }
-
-
-
-
 
     
     // MARK: - Helpers
