@@ -50,11 +50,21 @@ You can view the full design file here: [View Figma Design](https://www.figma.co
 
 ## 🖼 Screenshots
 
-### 🏠 Home Page and Add Expense Modal
-![Home Page and Modal View](HomePageAndModalView.png)
+### 🏠 Home Page and Add Expense Modal | 📅 Categorical and Daily Expenses View
+| ![Home Page and Modal View](HomePageAndModalView.png) | ![Categorical and Daily Expenses](CategoricalAndDailyExpense.png) |
+|:-----------------------------------------------:|:-----------------------------------------------------------:|
 
-### 📅 Categorical and Daily Expenses View
-![Categorical and Daily Expenses](CategoricalAndDailyExpense.png)
+## 🚀 How to Run
+
+1. Clone this repository.
+2. Open the project in Xcode.
+3. Build and run on a simulator or your iOS device.
+
+```bash
+git clone https://github.com/Sampada0808/ExpenseTracker.git
+cd ExpenseTracker
+open ExpenseTracker.xcodeproj
+```
 
 ---
 
