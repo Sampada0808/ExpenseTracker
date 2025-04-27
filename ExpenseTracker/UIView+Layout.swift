@@ -25,6 +25,7 @@ extension UIView {
             self.topAnchor.constraint(equalTo: parent.topAnchor, constant: 0),
             self.leadingAnchor.constraint(equalTo: parent.leadingAnchor, constant: 0),
             self.trailingAnchor.constraint(equalTo: parent.trailingAnchor, constant: 0),
+            self.heightAnchor.constraint(equalToConstant: 136)
         ])
     }
     

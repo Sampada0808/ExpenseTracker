@@ -16,7 +16,6 @@
                 <outlet property="helpBgIcon" destination="N27-Eb-MRq" id="RXT-KY-5OC"/>
                 <outlet property="helpIconImageView" destination="QVO-JT-0md" id="B29-pS-FOW"/>
                 <outlet property="settingsMenu" destination="Loe-6g-DKl" id="5Zw-5n-Pab"/>
-                <outlet property="titleNavBar" destination="hV4-9y-5CI" id="RVV-ON-Bmi"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
         </placeholder>
