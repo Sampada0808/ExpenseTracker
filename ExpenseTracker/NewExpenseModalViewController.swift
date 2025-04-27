@@ -40,6 +40,7 @@ class NewExpenseModalViewController: UIViewController, NewExpenseModalDelegate {
         modalView.delegate =  self
         modalView.editableDelegate = self
         view.addSubview(modalView)
+        modalView.transform = CGAffineTransform(scaleX: 0, y: 0)
         
         modalView.dailyExpenseEntry = self.dailyExpenseEntry
         
@@ -49,6 +50,13 @@ class NewExpenseModalViewController: UIViewController, NewExpenseModalDelegate {
         }
 
        
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        UIView.animate(withDuration: 0.25, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 2, options: [.curveEaseOut]){
+            self.modalView.transform = CGAffineTransform.identity
+        }
     }
     required init?(coder: NSCoder) {
         fatalError("Init coder not yet implemented")
