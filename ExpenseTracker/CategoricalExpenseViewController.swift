@@ -2,7 +2,7 @@ import UIKit
 
 
 
-class CategoricalExpenseViewController: UIViewController {
+class CategoricalExpenseViewController: UIViewController, NavBarViewControllerDelegate {
 
     var navBarView: UIView!
     var selectedCategory: Category?
@@ -14,24 +14,30 @@ class CategoricalExpenseViewController: UIViewController {
     var tableDelegates: [DailyExpenseTableDelegate] = []
     var homeVC: HomeViewController?
     
-
     
+    func didTapSettings() {
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        if let settingsVC = storyboard.instantiateViewController(withIdentifier: "Settings") as? SettingsViewController {
+            settingsVC.modalPresentationStyle = .overCurrentContext
+            self.present(settingsVC, animated: true, completion: nil)
+        }
+    }
 
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
-        
-        
-        
+        view.backgroundColor = UIColor.systemBackground
 
         // Custom navbar
         let navBarVc = NavBarViewController(nibName: "NavBarViewController", bundle: nil)
         addChild(navBarVc)
         navBarVc.tipMessage = "Select any of the rows to edit the expense and swift left on of the rows to delete that expense"
+        navBarVc.didMove(toParent: self)
+        navBarVc.delegate =  self
         navBarView = navBarVc.view
         navBarView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(navBarView)
+        
         
 
         // Add Back button and label
@@ -86,10 +92,8 @@ class CategoricalExpenseViewController: UIViewController {
             }
         }
         
-        // 2. Remove any empty dailyExpense
         filteredDailyExpenses.removeAll { $0.item.isEmpty }
         
-        // 3. ✅ Check if no data left -> pop back
            if filteredDailyExpenses.isEmpty {
                navigationController?.popViewController(animated: true)
                NotificationCenter.default.post(
@@ -118,7 +122,6 @@ class CategoricalExpenseViewController: UIViewController {
                     tableView.reloadData()
                     tableView.setContentOffset(.zero, animated: true)
                     tableView.layoutIfNeeded()
-                    // 🔥 Adjust the height constraint
                     if let heightConstraint = tableView.constraints.first(where: { $0.firstAttribute == .height }) {
                         heightConstraint.constant = tableView.contentSize.height
                     } else {
@@ -180,7 +183,6 @@ class CategoricalExpenseViewController: UIViewController {
                         tableView.setContentOffset(.zero, animated: true)
                         tableView.layoutIfNeeded()
 
-                        // ✅ Use updated dailyExpense, not ExpenseItem
                         setupFooter(for: tableView, with: dailyExpense)
                         updateDailyExpenseInHomeVC(updatedExpense: dailyExpense)
                     }

@@ -119,7 +119,7 @@
         <!--Settings View Controller-->
         <scene sceneID="Bt1-av-6QB">
             <objects>
-                <viewController id="OIf-Xp-0kU" customClass="SettingsViewController" customModule="ExpenseTracker" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="Settings" id="OIf-Xp-0kU" customClass="SettingsViewController" customModule="ExpenseTracker" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="KWH-iC-cKW">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

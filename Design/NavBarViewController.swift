@@ -19,12 +19,25 @@ class NavBarViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        helpIconImageView.isUserInteractionEnabled = true
-            let tapGesture = UITapGestureRecognizer(target: self, action: #selector(showHelpTips))
-            helpIconImageView.addGestureRecognizer(tapGesture)
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(showHelpTips))
+        [helpIconImageView,helpBgIcon].forEach{
+            $0?.isUserInteractionEnabled = true
+            $0?.addGestureRecognizer(tapGesture)
+        }
         settingsMenu.isUserInteractionEnabled = true
-            let tapSettingsGesture = UITapGestureRecognizer(target: self, action: #selector(showSettingModal))
+        let tapSettingsGesture = UITapGestureRecognizer(target: self, action: #selector(showSettingModal))
         settingsMenu.addGestureRecognizer(tapSettingsGesture)
+        
+        makeTappableAreaLarger(for: helpIconImageView)
+        makeTappableAreaLarger(for: settingsMenu)
+    }
+    
+    func makeTappableAreaLarger(for view: UIView) {
+        let tapArea = UIView()
+        tapArea.frame = view.frame.insetBy(dx: -20, dy: -20) // Increase the tappable area by 20 points on each side
+        tapArea.isUserInteractionEnabled = true
+        view.superview?.addSubview(tapArea)
+        tapArea.addGestureRecognizer(UITapGestureRecognizer(target: self, action: view == settingsMenu ? #selector(showSettingModal) : #selector(showHelpTips)))
     }
     
     override func viewWillLayoutSubviews() {
