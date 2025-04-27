@@ -16,6 +16,18 @@
 		27427C912DB7700A003F01D2 /* CustomHeaderFooterTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 27427C8F2DB7700A003F01D2 /* CustomHeaderFooterTableViewCell.xib */; };
 		2758951C2DB13864000AE893 /* NavBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2758951A2DB13864000AE893 /* NavBarViewController.swift */; };
 		2758951D2DB13864000AE893 /* NavBarViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2758951B2DB13864000AE893 /* NavBarViewController.xib */; };
+		27804F422DBE41BD00C6E4A8 /* UIView+Layout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27804F3E2DBE41BD00C6E4A8 /* UIView+Layout.swift */; };
+		27804F432DBE41BD00C6E4A8 /* NewExpenseModalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27804F3A2DBE41BD00C6E4A8 /* NewExpenseModalView.swift */; };
+		27804F442DBE41BD00C6E4A8 /* CategoricalExpenseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27804F312DBE41BD00C6E4A8 /* CategoricalExpenseViewController.swift */; };
+		27804F452DBE41BD00C6E4A8 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27804F352DBE41BD00C6E4A8 /* HomeViewController.swift */; };
+		27804F462DBE41BD00C6E4A8 /* CategoryModal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27804F342DBE41BD00C6E4A8 /* CategoryModal.swift */; };
+		27804F472DBE41BD00C6E4A8 /* NewExpenseModalViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27804F3B2DBE41BD00C6E4A8 /* NewExpenseModalViewController.swift */; };
+		27804F482DBE41BD00C6E4A8 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27804F3D2DBE41BD00C6E4A8 /* SettingsViewController.swift */; };
+		27804F492DBE41BD00C6E4A8 /* CategoryExpenseTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27804F332DBE41BD00C6E4A8 /* CategoryExpenseTableViewCell.swift */; };
+		27804F4B2DBE41BD00C6E4A8 /* CategoryExpenseDataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27804F322DBE41BD00C6E4A8 /* CategoryExpenseDataModel.swift */; };
+		27804F4E2DBE41BD00C6E4A8 /* NewExpenseModal.xib in Resources */ = {isa = PBXBuildFile; fileRef = 27804F392DBE41BD00C6E4A8 /* NewExpenseModal.xib */; };
+		27804F4F2DBE41BD00C6E4A8 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 27804F372DBE41BD00C6E4A8 /* LaunchScreen.storyboard */; };
+		27804F502DBE41BD00C6E4A8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 27804F302DBE41BD00C6E4A8 /* Assets.xcassets */; };
 		27EF0F9D2DA41A2000627944 /* Typography.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27EF0F9C2DA41A2000627944 /* Typography.swift */; };
 /* End PBXBuildFile section */
 
@@ -30,6 +42,18 @@
 		27427C8F2DB7700A003F01D2 /* CustomHeaderFooterTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CustomHeaderFooterTableViewCell.xib; sourceTree = "<group>"; };
 		2758951A2DB13864000AE893 /* NavBarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavBarViewController.swift; sourceTree = "<group>"; };
 		2758951B2DB13864000AE893 /* NavBarViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NavBarViewController.xib; sourceTree = "<group>"; };
+		27804F302DBE41BD00C6E4A8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		27804F312DBE41BD00C6E4A8 /* CategoricalExpenseViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoricalExpenseViewController.swift; sourceTree = "<group>"; };
+		27804F322DBE41BD00C6E4A8 /* CategoryExpenseDataModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryExpenseDataModel.swift; sourceTree = "<group>"; };
+		27804F332DBE41BD00C6E4A8 /* CategoryExpenseTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryExpenseTableViewCell.swift; sourceTree = "<group>"; };
+		27804F342DBE41BD00C6E4A8 /* CategoryModal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryModal.swift; sourceTree = "<group>"; };
+		27804F352DBE41BD00C6E4A8 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
+		27804F392DBE41BD00C6E4A8 /* NewExpenseModal.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NewExpenseModal.xib; sourceTree = "<group>"; };
+		27804F3A2DBE41BD00C6E4A8 /* NewExpenseModalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewExpenseModalView.swift; sourceTree = "<group>"; };
+		27804F3B2DBE41BD00C6E4A8 /* NewExpenseModalViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewExpenseModalViewController.swift; sourceTree = "<group>"; };
+		27804F3D2DBE41BD00C6E4A8 /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
+		27804F3E2DBE41BD00C6E4A8 /* UIView+Layout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Layout.swift"; sourceTree = "<group>"; };
+		27804F402DBE41BD00C6E4A8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		27EF0F9C2DA41A2000627944 /* Typography.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Typography.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -73,11 +97,10 @@
 		2737399E2D9EF1F300B5B705 = {
 			isa = PBXGroup;
 			children = (
-				27427C8A2DB76FEB003F01D2 /* dailyExpenseDataTableViewCell.swift */,
-				27427C8E2DB7700A003F01D2 /* CustomHeaderFooterTableViewCell.swift */,
-				27427C8F2DB7700A003F01D2 /* CustomHeaderFooterTableViewCell.xib */,
-				27427C8B2DB76FEB003F01D2 /* dailyExpenseDataTableViewCell.xib */,
-				27373A3B2D9EFA8900B5B705 /* Fonts */,
+				27804F5E2DBE43B600C6E4A8 /* Extensions */,
+				27804F5D2DBE439D00C6E4A8 /* Models */,
+				27804F512DBE424200C6E4A8 /* Assets */,
+				27804F552DBE429200C6E4A8 /* Controllers */,
 				27373A172D9EF98400B5B705 /* Design */,
 				273739A92D9EF1F300B5B705 /* ExpenseTracker */,
 				273739A82D9EF1F300B5B705 /* Products */,
@@ -95,14 +118,139 @@
 		27373A172D9EF98400B5B705 /* Design */ = {
 			isa = PBXGroup;
 			children = (
-				27373A132D9EF6F900B5B705 /* AppThemeColors.xcassets */,
-				27373A152D9EF71600B5B705 /* CategoryColors.xcassets */,
-				2758951A2DB13864000AE893 /* NavBarViewController.swift */,
-				2758951B2DB13864000AE893 /* NavBarViewController.xib */,
 				27373A1A2D9EFA2E00B5B705 /* ColorExtension.swift */,
 				27EF0F9C2DA41A2000627944 /* Typography.swift */,
+				27804F372DBE41BD00C6E4A8 /* LaunchScreen.storyboard */,
 			);
 			path = Design;
+			sourceTree = "<group>";
+		};
+		27804F512DBE424200C6E4A8 /* Assets */ = {
+			isa = PBXGroup;
+			children = (
+				27804F5F2DBE43D200C6E4A8 /* CategoryIconAssets */,
+				27804F532DBE426D00C6E4A8 /* CategoryColors */,
+				27804F522DBE425900C6E4A8 /* AppThemeColors */,
+				27373A3B2D9EFA8900B5B705 /* Fonts */,
+			);
+			path = Assets;
+			sourceTree = "<group>";
+		};
+		27804F522DBE425900C6E4A8 /* AppThemeColors */ = {
+			isa = PBXGroup;
+			children = (
+				27373A132D9EF6F900B5B705 /* AppThemeColors.xcassets */,
+			);
+			path = AppThemeColors;
+			sourceTree = "<group>";
+		};
+		27804F532DBE426D00C6E4A8 /* CategoryColors */ = {
+			isa = PBXGroup;
+			children = (
+				27373A152D9EF71600B5B705 /* CategoryColors.xcassets */,
+			);
+			path = CategoryColors;
+			sourceTree = "<group>";
+		};
+		27804F552DBE429200C6E4A8 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				27804F5C2DBE437C00C6E4A8 /* SettingViewController */,
+				27804F5A2DBE433200C6E4A8 /* NewExpenseModal */,
+				27804F592DBE432600C6E4A8 /* HomeViewController */,
+				27804F572DBE42C000C6E4A8 /* CategoricalExpenseViewController */,
+				27804F562DBE42AA00C6E4A8 /* NavBarViewController */,
+			);
+			path = Controllers;
+			sourceTree = "<group>";
+		};
+		27804F562DBE42AA00C6E4A8 /* NavBarViewController */ = {
+			isa = PBXGroup;
+			children = (
+				2758951A2DB13864000AE893 /* NavBarViewController.swift */,
+				2758951B2DB13864000AE893 /* NavBarViewController.xib */,
+			);
+			path = NavBarViewController;
+			sourceTree = "<group>";
+		};
+		27804F572DBE42C000C6E4A8 /* CategoricalExpenseViewController */ = {
+			isa = PBXGroup;
+			children = (
+				27804F312DBE41BD00C6E4A8 /* CategoricalExpenseViewController.swift */,
+				27804F582DBE42F100C6E4A8 /* DailyExpenseTable */,
+			);
+			path = CategoricalExpenseViewController;
+			sourceTree = "<group>";
+		};
+		27804F582DBE42F100C6E4A8 /* DailyExpenseTable */ = {
+			isa = PBXGroup;
+			children = (
+				27427C8A2DB76FEB003F01D2 /* dailyExpenseDataTableViewCell.swift */,
+				27427C8E2DB7700A003F01D2 /* CustomHeaderFooterTableViewCell.swift */,
+				27427C8F2DB7700A003F01D2 /* CustomHeaderFooterTableViewCell.xib */,
+				27427C8B2DB76FEB003F01D2 /* dailyExpenseDataTableViewCell.xib */,
+			);
+			path = DailyExpenseTable;
+			sourceTree = "<group>";
+		};
+		27804F592DBE432600C6E4A8 /* HomeViewController */ = {
+			isa = PBXGroup;
+			children = (
+				27804F5B2DBE436200C6E4A8 /* CategoricalExpenseTable */,
+				27804F352DBE41BD00C6E4A8 /* HomeViewController.swift */,
+			);
+			path = HomeViewController;
+			sourceTree = "<group>";
+		};
+		27804F5A2DBE433200C6E4A8 /* NewExpenseModal */ = {
+			isa = PBXGroup;
+			children = (
+				27804F392DBE41BD00C6E4A8 /* NewExpenseModal.xib */,
+				27804F3A2DBE41BD00C6E4A8 /* NewExpenseModalView.swift */,
+				27804F3B2DBE41BD00C6E4A8 /* NewExpenseModalViewController.swift */,
+			);
+			path = NewExpenseModal;
+			sourceTree = "<group>";
+		};
+		27804F5B2DBE436200C6E4A8 /* CategoricalExpenseTable */ = {
+			isa = PBXGroup;
+			children = (
+				27804F332DBE41BD00C6E4A8 /* CategoryExpenseTableViewCell.swift */,
+			);
+			path = CategoricalExpenseTable;
+			sourceTree = "<group>";
+		};
+		27804F5C2DBE437C00C6E4A8 /* SettingViewController */ = {
+			isa = PBXGroup;
+			children = (
+				27804F3D2DBE41BD00C6E4A8 /* SettingsViewController.swift */,
+			);
+			path = SettingViewController;
+			sourceTree = "<group>";
+		};
+		27804F5D2DBE439D00C6E4A8 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				27804F322DBE41BD00C6E4A8 /* CategoryExpenseDataModel.swift */,
+				27804F342DBE41BD00C6E4A8 /* CategoryModal.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		27804F5E2DBE43B600C6E4A8 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				27804F3E2DBE41BD00C6E4A8 /* UIView+Layout.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		27804F5F2DBE43D200C6E4A8 /* CategoryIconAssets */ = {
+			isa = PBXGroup;
+			children = (
+				27804F302DBE41BD00C6E4A8 /* Assets.xcassets */,
+			);
+			path = CategoryIconAssets;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -171,6 +319,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				27427C8D2DB76FEB003F01D2 /* dailyExpenseDataTableViewCell.xib in Resources */,
+				27804F4E2DBE41BD00C6E4A8 /* NewExpenseModal.xib in Resources */,
+				27804F4F2DBE41BD00C6E4A8 /* LaunchScreen.storyboard in Resources */,
+				27804F502DBE41BD00C6E4A8 /* Assets.xcassets in Resources */,
 				27427C912DB7700A003F01D2 /* CustomHeaderFooterTableViewCell.xib in Resources */,
 				27373A142D9EF6F900B5B705 /* AppThemeColors.xcassets in Resources */,
 				27373A162D9EF71600B5B705 /* CategoryColors.xcassets in Resources */,
@@ -187,6 +338,15 @@
 			files = (
 				27EF0F9D2DA41A2000627944 /* Typography.swift in Sources */,
 				27373A1B2D9EFA2E00B5B705 /* ColorExtension.swift in Sources */,
+				27804F422DBE41BD00C6E4A8 /* UIView+Layout.swift in Sources */,
+				27804F432DBE41BD00C6E4A8 /* NewExpenseModalView.swift in Sources */,
+				27804F442DBE41BD00C6E4A8 /* CategoricalExpenseViewController.swift in Sources */,
+				27804F452DBE41BD00C6E4A8 /* HomeViewController.swift in Sources */,
+				27804F462DBE41BD00C6E4A8 /* CategoryModal.swift in Sources */,
+				27804F472DBE41BD00C6E4A8 /* NewExpenseModalViewController.swift in Sources */,
+				27804F482DBE41BD00C6E4A8 /* SettingsViewController.swift in Sources */,
+				27804F492DBE41BD00C6E4A8 /* CategoryExpenseTableViewCell.swift in Sources */,
+				27804F4B2DBE41BD00C6E4A8 /* CategoryExpenseDataModel.swift in Sources */,
 				27427C902DB7700A003F01D2 /* CustomHeaderFooterTableViewCell.swift in Sources */,
 				27427C8C2DB76FEB003F01D2 /* dailyExpenseDataTableViewCell.swift in Sources */,
 				2758951C2DB13864000AE893 /* NavBarViewController.swift in Sources */,
@@ -194,6 +354,17 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		27804F372DBE41BD00C6E4A8 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				27804F402DBE41BD00C6E4A8 /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		273739BB2D9EF1F500B5B705 /* Debug */ = {
