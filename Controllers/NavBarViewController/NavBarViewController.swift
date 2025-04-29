@@ -58,7 +58,7 @@ class NavBarViewController: UIViewController {
 
     }
     
-    var tipMessage: String = "Tap + button to add a new expense and change the theme using hamburger icon right side of the question mark"
+    var tipMessage: String = "Change the theme using hamburger icon right side of the question mark and Select any of the categories to get daily expense breakdown"
 
     @objc func showHelpTips() {
         let alertVC = UIAlertController(title: "Tips", message: tipMessage, preferredStyle: .alert)

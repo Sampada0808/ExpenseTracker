@@ -187,6 +187,7 @@
                         <outlet property="appThemeLabel" destination="WCP-Fq-HzG" id="lby-uH-ETg"/>
                         <outlet property="modalView" destination="nnc-Kx-6kX" id="b6V-fD-afi"/>
                         <outlet property="settingsLabel" destination="D5N-eN-DeE" id="cWc-v3-i6W"/>
+                        <outlet property="themeControl" destination="XV4-Jx-K91" id="szC-dZ-GZS"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="uHt-cs-C25" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>

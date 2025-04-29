@@ -15,10 +15,23 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             let homeVC = storyboard.instantiateViewController(withIdentifier: "HomeViewController") as! HomeViewController
             let navController = UINavigationController(rootViewController: homeVC)
 
-            let window = UIWindow(windowScene: windowScene)
-            window.rootViewController = navController
-            self.window = window
-            window.makeKeyAndVisible()
+            let windows = UIWindow(windowScene: windowScene)
+            windows.rootViewController = navController
+            self.window = windows
+            windows.makeKeyAndVisible()
+        
+        if let userInterface = UserDefaults.standard.object(forKey: "interfacePreference") as? Int{
+            if userInterface == 0{
+                window?.overrideUserInterfaceStyle = .light
+            }
+            else if userInterface == 1 {
+                window?.overrideUserInterfaceStyle = .dark
+            }
+            else {
+                window?.overrideUserInterfaceStyle =  .unspecified
+            }
+        }
+            
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {

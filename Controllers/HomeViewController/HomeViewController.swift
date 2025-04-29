@@ -86,9 +86,6 @@ class HomeViewController: UIViewController, NavBarViewControllerDelegate {
         
         let navBarVC = NavBarViewController(nibName: "NavBarViewController", bundle: nil)
         addChild(navBarVC)
-        if(!categoricalExpenses.isEmpty) {
-            navBarVC.tipMessage = "Select any of the categories to get daily expense breakdown"
-        }
         view.addSubview(navBarVC.view)
         navBarVC.didMove(toParent: self)
         navBarVC.delegate = self
