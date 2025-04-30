@@ -13,6 +13,7 @@ An iOS app that helps you track your daily and weekly expenses easily by categor
 - 🎨 Color-Coded Categories for Quick Identification  
 - 📊 Simple and Intuitive User Interface  
 - 🔄 Real-time Updates between Views  
+- 💾 Persistent Storage using Realm Database
 
 ---
 
@@ -21,6 +22,7 @@ An iOS app that helps you track your daily and weekly expenses easily by categor
 - Swift
 - UIKit
 - XIBs for Custom Views
+- Realm for Persistence
 - MVC Architecture
 
 ---
