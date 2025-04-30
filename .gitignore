@@ -1,0 +1,17 @@
+# Xcode specific
+xcuserdata/
+DerivedData/
+build/
+
+# CocoaPods
+Pods/
+
+# SwiftPM
+.build/
+Package.resolved
+
+# Workspace settings
+*.xcworkspace/xcuserdata/
+
+# Other
+*.DS_Store
