@@ -243,7 +243,7 @@ class NewExpenseModalView: UIView {
             }
         } else {
             // Code for adding new expense (you can keep it same)
-            let expense = ExpenseItem(id: UUID(), item: item, qty: qty, unit: unit, price: Double(price)!)
+            let expense = ExpenseItem(id: UUID().uuidString, item: item, qty: qty, unit: unit, price: Double(price)!)
             let normalizedDate = calendar.startOfDay(for: date)
 
             if let index = dailyExpenseEntry.firstIndex(where: {
@@ -262,7 +262,7 @@ class NewExpenseModalView: UIView {
                 NotificationCenter.default.post(name: NSNotification.Name("com.Spendly.updateExpense"), object: nil, userInfo: ["updatedExpense": updatedExpense])
             } else {
                 let dailyExpense = DailyExpense(
-                    id: UUID(),
+                    id: UUID().uuidString,
                     date: normalizedDate,
                     category: category,
                     item: [expense]

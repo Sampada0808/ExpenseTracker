@@ -1,8 +1,11 @@
 import UIKit
-
+import RealmSwift
+import os
 
 
 class HomeViewController: UIViewController, NavBarViewControllerDelegate {
+    
+    let realm = try! Realm()
     func didTapSettings() {
         performSegue(withIdentifier: "SettingsSegue", sender: nil)
     }
@@ -83,6 +86,9 @@ class HomeViewController: UIViewController, NavBarViewControllerDelegate {
     // MARK: - Lifecycle Methods
     override func viewDidLoad() {
         super.viewDidLoad()
+        dailyExpense = getData()
+        categoricalExpenses = generateCategoryDataModels()
+
         
         let navBarVC = NavBarViewController(nibName: "NavBarViewController", bundle: nil)
         addChild(navBarVC)
@@ -114,15 +120,74 @@ class HomeViewController: UIViewController, NavBarViewControllerDelegate {
         categoryTableView.separatorStyle = .none
 
     }
+    func updateRealmWithUpdatedExpenses(_ updatedExpenses: [DailyExpense]) {
+        do {
+            try realm.write {
+                for updated in updatedExpenses {
+                    if let existing = realm.object(ofType: LocalDailyExpense.self, forPrimaryKey: updated.id) {
+                        // Update top-level fields
+                        existing.date = updated.date
+                        existing.category = updated.category
+
+                        // Update items
+                        let existingItemsDict = Dictionary(uniqueKeysWithValues: existing.item.map { ($0._id, $0) })
+
+                        // Remove items that no longer exist
+                        for existingItem in existing.item {
+                            if !updated.item.contains(where: { $0.id == existingItem._id }) {
+                                if let index = existing.item.index(of: existingItem) {
+                                    existing.item.remove(at: index)
+                                }
+                            }
+                        }
+
+                        // Add or update items
+                        for updatedItem in updated.item {
+                            if let localItem = existingItemsDict[updatedItem.id] {
+                                localItem.item = updatedItem.item
+                                localItem.qty = updatedItem.qty
+                                localItem.unit = updatedItem.unit
+                                localItem.price = updatedItem.price
+                            } else {
+                                let newItem = LocalExpenseItem()
+                                newItem._id = updatedItem.id
+                                newItem.item = updatedItem.item
+                                newItem.qty = updatedItem.qty
+                                newItem.unit = updatedItem.unit
+                                newItem.price = updatedItem.price
+                                existing.item.append(newItem)
+                            }
+                        }
+
+                    } else {
+                        // If not found, it's a new entry — add it
+                        let newLocalExpense = LocalDailyExpense()
+                        newLocalExpense._id = updated.id
+                        newLocalExpense.date = updated.date
+                        newLocalExpense.category = updated.category
+                        for updatedItem in updated.item {
+                            let localItem = LocalExpenseItem()
+                            localItem._id = updatedItem.id
+                            localItem.item = updatedItem.item
+                            localItem.qty = updatedItem.qty
+                            localItem.unit = updatedItem.unit
+                            localItem.price = updatedItem.price
+                            newLocalExpense.item.append(localItem)
+                        }
+                        realm.add(newLocalExpense)
+                    }
+                }
+            }
+        } catch {
+            print("Error updating Realm: \(error.localizedDescription)")
+        }
+    }
+
     @objc func handleUpdatedExpenses(_ notification: Notification) {
         if let updatedExpenses = notification.userInfo?["updatedExpenses"] as? [DailyExpense] {
-            // Do not modify the `id`, just update other fields
             self.dailyExpense = updatedExpenses
-            
-            // Recalculate the category data
-            categoricalExpenses = generateCategoryDataModels(from: dailyExpense)
-            
-            // Reload the table view and update the UI
+            updateRealmWithUpdatedExpenses(updatedExpenses)
+            categoricalExpenses = generateCategoryDataModels()
             categoryTableView.reloadData()
             addAllLabels()
             updateTotalExpenseLabel()
@@ -130,12 +195,26 @@ class HomeViewController: UIViewController, NavBarViewControllerDelegate {
     }
     
     func updateExpenseInDailyExpenses(updatedExpense: DailyExpense) {
-           // Update the array with the updated expense
-           if let index = dailyExpense.firstIndex(where: { $0.id == updatedExpense.id }) {
-               dailyExpense[index] = updatedExpense
-           }
-           
-       }
+               // Update the array with the updated expense
+               if let index = dailyExpense.firstIndex(where: { $0.id == updatedExpense.id }) {
+                   dailyExpense[index] = updatedExpense
+               }
+               
+    }
+    
+    func deleteExpenseInRealm(deleteExpense: [DailyExpense]) {
+        let realm = try! Realm()
+
+        try! realm.write {
+            for expense in deleteExpense {
+                if let objectToDelete = realm.object(ofType: LocalDailyExpense.self, forPrimaryKey: expense.id) {
+                    realm.delete(objectToDelete)
+                }
+            }
+        }
+    }
+
+    
     
     @objc func handleRemovedExpenseExternally(_ notification: Notification) {
         guard let categoryRawValue = notification.userInfo?["categoryRawValue"] as? String,
@@ -144,30 +223,39 @@ class HomeViewController: UIViewController, NavBarViewControllerDelegate {
         }
         
         let updatedExpenses = notification.userInfo?["updatedExpenses"] as? [DailyExpense] ?? []
-        
 
         if updatedExpenses.isEmpty {
+            let expensesToDelete = dailyExpense.filter { $0.category == selectedCategory }
+            deleteExpenseInRealm(deleteExpense: expensesToDelete)
             dailyExpense.removeAll { $0.category == selectedCategory }
         } else {
-            for (index, var expense) in dailyExpense.enumerated() {
-                   // For each item in the current expense's item list
-                   expense.item = expense.item.filter { item in
-                       // Check if the item is present in the updatedExpenses
-                       return updatedExpenses.contains { updatedExpense in
-                           updatedExpense.item.contains { $0.id == item.id }
-                       }
-                   }
-                   
-                   // Optionally, if after filtering, an expense has no items left, you may want to remove the expense
-                   if expense.item.isEmpty {
-                       dailyExpense.remove(at: index)
-                   }
-               }
+            var updatedList: [DailyExpense] = []
+            var toDelete: [DailyExpense] = []
 
+            for expense in dailyExpense {
+                if expense.category == selectedCategory {
+                    let filteredItems = expense.item.filter { item in
+                        updatedExpenses.contains { $0.item.contains(where: { $0.id == item.id }) }
+                    }
+
+                    if filteredItems.isEmpty {
+                        toDelete.append(expense)
+                    } else {
+                        var updatedExpense = expense
+                        updatedExpense.item = filteredItems
+                        updatedList.append(updatedExpense)
+                    }
+                } else {
+                    updatedList.append(expense)
+                }
+            }
+
+            deleteExpenseInRealm(deleteExpense: toDelete)
+            dailyExpense = updatedList
         }
 
         // Refresh UI
-        categoricalExpenses = generateCategoryDataModels(from: dailyExpense)
+        categoricalExpenses = generateCategoryDataModels()
         categoryTableView.reloadData()
         addAllLabels()
         updateTotalExpenseLabel()
@@ -209,6 +297,7 @@ class HomeViewController: UIViewController, NavBarViewControllerDelegate {
         print("TitleBar View:\(self.titleBarView.frame)")
 
         // Reload table data, update labels
+        dailyExpense = getData()
         categoryTableView.reloadData()
         updateTotalExpenseLabel()
         addAllLabels()
@@ -232,9 +321,32 @@ class HomeViewController: UIViewController, NavBarViewControllerDelegate {
             
             // Append the new expense to the dailyExpense list
             dailyExpense.append(newExpense)
+            do{
+                try realm.write{
+                    let localExpense = LocalDailyExpense()
+                    localExpense._id = newExpense.id
+                    localExpense.category = newExpense.category
+                    localExpense.date = newExpense.date
+                    for expenseItem in newExpense.item {
+                            let localItem = LocalExpenseItem()
+                            localItem._id = expenseItem.id
+                            localItem.item = expenseItem.item
+                            localItem.qty = expenseItem.qty
+                            localItem.unit = expenseItem.unit
+                            localItem.price = expenseItem.price
+
+                            localExpense.item.append(localItem) // append to Realm List
+                    }
+                    realm.add(localExpense)
+                }
+            }catch let error as NSError{
+                let errorMessage = error.localizedDescription
+                os_log("%@",type: .error, errorMessage)
+            }
 
             // Recalculate summary
-            categoricalExpenses = generateCategoryDataModels(from: dailyExpense)
+            dailyExpense = getData()
+            categoricalExpenses = generateCategoryDataModels()
 
             // Update UI
             categoryTableView.reloadData()
@@ -245,6 +357,33 @@ class HomeViewController: UIViewController, NavBarViewControllerDelegate {
 
     
     // MARK: - Helpers
+    
+    func getData() -> [DailyExpense]{
+        dailyExpense.removeAll()
+        let dailyExpenseResults = realm.objects(LocalDailyExpense.self)
+                for expense in dailyExpenseResults {
+                    let items: [ExpenseItem] = expense.item.map { localItem in
+                        ExpenseItem(
+                            id: localItem._id,
+                            item: localItem.item,
+                            qty: localItem.qty,
+                            unit: localItem.unit,
+                            price: localItem.price
+                        )
+                    }
+
+                    let daily = DailyExpense(
+                        id: expense._id,
+                        date: expense.date,
+                        category: expense.category,
+                        item: items
+                    )
+
+                    dailyExpense.append(daily)
+
+                }
+        return dailyExpense
+            }
     
     /// Update total expense label text
     func updateTotalExpenseLabel() {
@@ -263,7 +402,7 @@ class HomeViewController: UIViewController, NavBarViewControllerDelegate {
     func addAllLabels() {
         let total = totalExpenseAmount
         
-        if categoricalExpenses.isEmpty || total == 0 {
+        if dailyExpense.isEmpty || total == 0 {
             // Empty state UI
             noExpenseLabel.isHidden = false
             messageLabel.isHidden = false
@@ -325,12 +464,12 @@ class HomeViewController: UIViewController, NavBarViewControllerDelegate {
     }
     
     /// Aggregate weekly category data into model
-    func generateCategoryDataModels(from allExpenses: [DailyExpense]) -> [CategoryExpenseDataModel] {
+    func generateCategoryDataModels() -> [CategoryExpenseDataModel] {
         let today = Date()
         let calendar = Calendar.current
         let sevenDaysAgo = calendar.date(byAdding: .day, value: -6, to: today)!
 
-        let weeklyExpenses = allExpenses.filter {
+        let weeklyExpenses = dailyExpense.filter {
             $0.date >= sevenDaysAgo && $0.date <= today
         }
 
@@ -351,6 +490,7 @@ class HomeViewController: UIViewController, NavBarViewControllerDelegate {
 
         return models.sorted(by: { $0.amount > $1.amount })
     }
+
     
     @objc func detailExpenseTapped(_ sender: CategoryTapGestureRecognizer) {
         guard let indexPath = sender.indexPath else { return }
